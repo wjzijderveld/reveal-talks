@@ -46,7 +46,7 @@
     <h2>Heads Up</h2>
 
     <p>
-        This is generated list of the talks I gave with the use of RevealJS slides.
+        This is a generated list of the talks I gave with the use of RevealJS slides.
     </p>
 
 </section>
