@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Symfony CMF - by Willem-Jan Zijderveld</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../css/reveal.min.css">
+		<link rel="stylesheet" href="../css/theme/010php.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="../lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="../css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+        <script src="../lib/js/html5shiv.js"></script>
+        <![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+
+					<img src="images/cmf-logo.png" width="1000" height="240" class="plain" title="Symfony CMF" />
+					<h4>A decoupled Content Management Framework</h4>
+                    <p class="topmargin-80">14 november - 010PHP</p>
+
+				</section>
+
+				<section>
+
+                    <h2>Willem-Jan Zijderveld</h2>
+                    <h3>Developer at Beeldspraak</h3>
+
+                    <p>@willemjanz</p>
+                    <p>github.com/wjzijderveld</p>
+                    <p>blog.willem-jan.net</p>
+
+				</section>
+
+                <section>
+
+                    <h2>In this talk</h2>
+
+                    <ul>
+                        <li>What is Symfony CMF</li>
+                        <li>Under the hood: PHPCR</li>
+                        <li>The components</li>
+                        <li>What's brewing</li>
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h2>What is Symfony CMF</h2>
+
+                    <ul>
+                        <li class="fragment">Toolbox</li>
+                        <li class="fragment">
+                            Aimed at developers
+                            <ul>
+                                <li>Set of bundles</li>
+                                <li>Scalability</li>
+                                <li>Usability</li>
+                                <li>Documentation</li>
+                                <li>Testing</li>
+                            </ul>
+                        </li>
+                        <li class="fragment">Community Driven</li>
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h2>Under the hood: PHPCR</h2>
+
+                </section>
+
+                <section>
+
+                    <h2>PHP Content Repository</h2>
+
+                    <ul>
+                        <li>Proven technique</li>
+                        <li>Defines a interface</li>
+                        <li>Decouple the storage from you application</li>
+                        <li>Lot's of features</li>
+                    </ul>
+
+                    <aside class="notes">
+
+                        <ul>
+                            <li>JCR</li>
+                        </ul>
+
+                    </aside>
+
+                </section>
+
+                <section>
+
+                    <h2>PHPCR</h2>
+
+                    <p>Interface <strong>any</strong> PHP content management application with <strong>any</strong> content repository</p>
+
+                </section>
+
+                <section>
+                    <h2>PHPCR</h2>
+
+                    <p>Write applications once, switch storage backends when needed</p>
+
+
+                </section>
+
+                <section>
+
+                    <h2>PHPCR: Quick overview</h2>
+
+                    <ul>
+                        <li>Store content in a tree of nodes</li>
+                        <li>Each node has a name and a type</li>
+                        <li>Nodes can have children</li>
+                        <li>Nodes can have properties with values</li>
+                        <li>A value can be almost anything</li>
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h2>Best of both worlds</h2>
+
+                    <ul>
+                        <li>RDBMS
+                            <ul>
+                                <li>Transactions</li>
+                                <li>Query</li>
+                                <li>Structure</li>
+                                <li>Integrity</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <ul>
+                        <li>Filesystem
+                            <ul>
+                                <li>Binary</li>
+                                <li>Hierarchy</li>
+                                <li>Locking</li>
+                                <li>Access Control</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <ul class="fragment">
+                        <li>And more
+                            <ul>
+                                <li>Unstructured</li>
+                                <li>Versioning</li>
+                                <li>Full-Text</li>
+                                <li>Multi-value</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </section>
+
+                <section>
+                    <h2>Example</h2>
+
+                    <pre><code data-trim>
+&lt;jcr:root>
+  &lt;cms>
+    &lt;pages>
+      &lt;home title="Homepage">
+        &lt;block
+          title="News"
+          content="Today: Symfony CMF presentation"/>
+      &lt;/home>
+      &lt;contact
+        title="Contact"
+        content="symfony-cmf-devs@googlegroups.com"/>
+    &lt;/pages>
+  &lt;/cms>
+&lt;/jcr:root>
+                    </code></pre>
+
+                    <h4>Node <em>home</em></h4>
+                    <ul>
+                        <li>Path: /cms/pages/home</li>
+                        <li>Parent: /cms/pages</li>
+                        <li>Name: home</li>
+                    </ul>
+
+                </section>
+
+                <section>
+                    <h2>Doctrine PHPCR ODM</h2>
+
+                    <ul>
+                        <li>Object to Document mapper</li>
+                        <li>Persist your objects as PHPCR nodes</li>
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h2>I thought this talk was about Symfony CMF?</h2>
+
+                </section>
+
+                <section>
+
+                    <h2>The components</h2>
+
+                    <ul>
+                        <li>CoreBundle</li>
+                        <li>Routing + RoutingBundle</li>
+                        <li>ContentBundle</li>
+                        <li>BlockBundle</li>
+                        <li>CreateBundle</li>
+                        <li>MediaBundle</li>
+                        <li>MenuBundle</li>
+                    </ul>
+
+                </section>
+
+                <section>
+                    <h2>CoreBundle</h2>
+
+                    <ul>
+                        <li>Publish Workflow</li>
+                        <li>Templating</li>
+                        <li>Multi-language support</li>
+                        <li>More...</li>
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h2>CoreBunde</h2>
+                    <h3>Publish Workflow</h3>
+
+                    <p>Implement your publication workflow</p>
+
+                    <p>Uses Symfony Security Component with Access Voters</p>
+
+                </section>
+
+                <section>
+
+                    Article.php
+                    <pre><code data-trim class="php">&lt;?php
+class Article implements PublishableInterface, PublishTimePeriodInterface
+{
+    /** @var \DateTime */
+    private $isPublishable;
+
+    public function isPublishable() {
+        return $this->isPublishable;
+    }
+}
+                    </code></pre>
+
+                    MyController.php
+
+                    <pre><code data-trim class="php">&lt;?php
+// check if current user is allowed to see this document
+$pwc = $container->get('cmf_core.publish_workflow.checker');
+if (!$pwc->isGranted(
+    PublishWorkflowChecker::VIEW_ATTRIBUTE,
+    $document
+)) { // f.e. redirect to 404 }
+                    </code></pre>
+
+                    <p class="fragment">Most of the time, this is handled by the RequestListener</p>
+
+                </section>
+
+                <section>
+                    <h2>CoreBundle</h2>
+                    <h3>Templating</h3>
+
+                    <p>Provides some basic helpers</p>
+
+                    <ul>
+                        <li>cmf_is_published</li>
+                        <li>cmf_children</li>
+                        <li>cmf_next/cmf_prev</li>
+                        <li>...</li>
+                    </ul>
+                </section>
+
+                <section>
+
+                    <h2>CoreBundle</h2>
+                    <h3>Templating</h3>
+
+                    <pre><code data-trim class="php">
+{% for newsItem in cmf_children(page)|reverse %}
+    &lt;li>
+        &lt;a href="{{ path(newsItem) }}">{{ newsItem.title }}&lt;/a>
+        ({{ newsItem.publishStartDate | date('Y-m-d')  }})
+    &lt;/li>
+{% endfor %}
+                    </code></pre>
+
+                </section>
+
+                <section>
+                    <h2>CoreBundle</h2>
+                    <h3>Multi-language support</h3>
+
+                    <ul>
+                        <li>Configuration for all Bundles</li>
+                        <li>TranslatableInterface</li>
+                    </ul>
+
+                </section>
+
+                <section>
+                    <h2>Routing + RoutingBundle</h2>
+
+                    <ul>
+                        <li>Extends Symfony Routing Component</li>
+                        <li>Introduces ChainRouter</li>
+                        <li>Has the possibility to load routes from the database</li>
+                        <li>Bundle simply integrates the component</li>
+                    </ul>
+
+                </section>
+
+                <section>
+
+                    <h2>ChainRouter</h2>
+
+                    <ul>
+                        <li>Add prioritized routers</li>
+                        <li>Stops on first match</li>
+                        <li>Can use the full Request</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>You can use tagging to add services as router</li>
+                        </ul>
+                    </aside>
+
+                </section>
+
+                <section>
+                    <h2>Dynamic Router</h2>
+
+                    <ul>
+                        <li>Lookup routes in your database</li>
+                        <li>Generate URLs based on path or object</li>
+                    </ul>
+
+                    <aside class="notes">
+                        Has the possibility to generate routes for a given object
+                    </aside>
+
+                </section>
+
+                <section>
+                    <h2>Enhance your routes</h2>
+
+                    <ul>
+                        <li>RouteContentEnhancer</li>
+                        <li>FieldMapEnchancer</li>
+                        <li>FieldByClassEnhancer</li>
+                        <li>FieldPresenceEnhancer</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>RouteContentEnhancer</h2>
+
+                    <p>When the found route is an instance of RouteObjectInterface</p>
+
+                    <pre><code data-trim class="php">&lt;?php class Route implements RouteObjectInterface {}</code></pre>
+
+                    <p>Set's the contentDocument in the route</p>
+
+                    <pre><code class="php" data-trim>&lt;?php $route->getContent(); ?></code></pre>
+
+                </section>
+
+                <section>
+                    <h2>FieldMapEnhancer</h2>
+
+                    <p>Sets a value in the route, based on a hashmap</p>
+
+                    <pre><code class="php" data-trim>&lt?php
+use Symfony\Cmf\Component\Routing\Enhancer\FieldMapEnhancer;
+$hashMap = array('foo' => '010PHP');
+$enhancer = new FieldMapEnhancer('bar', 'title', $hashMap);
+</code></pre>
+                    <p>Imagine a Route, that has a property <em>bar</em> with value <em>foo</em></p>
+                    <p>After the enhancer is applied, the route will also have a property <em>title</em> with value <em>010PHP</em></p>
+
+                </section>
+
+                <section>
+                    <h2>FieldByClassEnhancer</h2>
+
+                    <p>Looks like FieldMap enhancer</p>
+                    <p>Checks with instanceOf instead of comparing value</p>
+                    <p>Used to set a controller based on Document</p>
+
+                </section>
+
+                <section>
+                    <h2>FieldPresenceInhancer</h2>
+
+                    <p>Simply set's a value when a field is present</p>
+                    <p>Can also be used to set a default value</p>
+                    <p>Is used to set the default Controller</p>
+
+                </section>
+
+                <section>
+                    <h2>ContentBundle</h2>
+
+                    <ul>
+                        <li>Default Document</li>
+                        <li>Default Controller</li>
+                        <li>References routes</li>
+                        <li>References menu nodes</li>
+                    </ul>
+
+                </section>
+
+                <section>
+                    <h2>BlockBundle</h2>
+
+                    <p>Create and use blocks of content in your website.</p>
+                    <p>Makes perfect sense as childnodes in your Content Repository</p>
+
+                </section>
+
+                <section>
+                    <h2>BlockBundle</h2>
+
+                    <h3>Common behaviour</h3>
+
+                    <ul>
+                        <li>Aimed at PHPCR</li>
+                        <li>Settings</li>
+                        <li>implements PublishableInterface</li>
+                        <li>Support Multi-language</li>
+                    </ul>
+
+                </section>
+
+                <section>
+                    <h2>BlockBundle</h2>
+                    <h3>Available types</h3>
+
+                    <ul>
+                        <li>StringBlock</li>
+                        <li>SimpleBlock</li>
+                        <li>ContainerBlock</li>
+                        <li>ReferenceBlock</li>
+                    </ul>
+                    <ul>
+                        <li>ActionBlock</li>
+                        <li>RssBlock</li>
+                        <li>ImagineBlock</li>
+                        <li>SlideshowBlock</li>
+                    </ul>
+
+                    <p>&nbsp;</p>
+                    <h5 class="fragment">Very easy to create your own block</h5>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>StringBlock: 1 Field, Rendered without HTML</li>
+                            <li>SimpleBlock: Title + Body</li>
+                            <li></li>
+                        </ul>
+                    </aside>
+
+                </section>
+
+                <section>
+                    <h2>BlockBundle</h2>
+                    <h3>Template usage</h3>
+
+                    <pre><code class="php" data-trim>
+{{ sonata_block_render({
+    'name': 'presentationBlock'
+}) }}
+                    </code></pre>
+
+                    <aside class="notes">
+                        <p>By default, BlockBundle searches for a childNode, but you can supply a full path</p>
+                    </aside>
+
+                </section>
+
+                <section>
+                    <h2>CreateBundle</h2>
+
+                    <ul>
+                        <li>Integrates CreateJS and CreatePHP into Symfony2</li>
+                        <li>Uses RDFa meta-data (like Doctrine's mapping)</li>
+                        <li>Support for CKEditor and Hallo.js</li>
+                    </ul>
+
+                    <p>&nbsp;</p>
+
+                    <h5>Twig example</h5>
+                    <pre><code data-trim class="django">
+{% createphp page as="rdf" noautotag %}
+    &lt;div {{ createphp_attributes(rdf) }}>
+        &lt;h1 class="my-title" {{ createphp_attributes( rdf.title ) }}>
+            {{ createphp_content( rdf.title ) }}
+        &lt;/h1>
+        &lt;div {{ createphp_attributes( rdf.body ) }}>
+            {{ createphp_content( rdf.body ) }}
+        &lt;/div>
+    &lt;/div>
+{% endcreatephp %}
+                    </code></pre>
+
+                </section>
+
+                <section>
+                    <h2>MediaBundle</h2>
+
+                    <ul>
+                        <li>Basic documents</li>
+                        <li>Controllers for showing and downloading</li>
+                        <li>Helper for uploading</li>
+                        <li>Adapters for 3rd-party integration
+                            <ul>
+                                <li>LiipImagine</li>
+                                <li>elFinder</li>
+                                <li>Gaufrette</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>MenuBundle</h2>
+
+                    <ul>
+                        <li>Integrates KnpMenu into Symfony CMF</li>
+                        <li>Can point to content or a route</li>
+                    </ul>
+
+                </section>
+
+                <section>
+                    <h2>MenuBundle</h2>
+
+                    <pre><code class="djano" data-trim>
+{{ knp_menu_render('main-menu') }}
+                    </code></pre>
+
+                    <p class="fragment">Simple isn't it?</p>
+
+                </section>
+
+                <section>
+                    <h2>Even more Bundles</h2>
+
+                    <ul>
+                        <li>CmfTreeBrowserBundle</li>
+                        <li>CmfBlogBundle</li>
+                        <li>CmfSearchBundle</li>
+                        <li>CmfSimpleCms</li>
+                        <li>LuneticsLocaleBundle</li>
+                        <li>SonataDoctrinePhpcrAdminBundle</li>
+                        <li>...</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>What's brewing?</h2>
+                </section>
+
+                <section>
+                    <h2>1.0 has been released!</h2>
+                    <h3 class="fragment" data-fragment-index="1">1.1 scheduled a month after Symfony 2.4</h3>
+                    <p class="fragment" data-fragment-index="1">So somewhere in December</p>
+                </section>
+
+                <section>
+                    <h2>Release cycle</h2>
+                </section>
+
+                <section class="who-is-using-cmf">
+                    <h2>Who is using it?</h2>
+
+                    <div class="fragment">
+                        <img class="plain" src="images/drupal_logo-blue.png" alt="Drupal" height="120" />
+                        <img class="plain" src="images/sg300x50_b.png" alt="ServerGrove"  /><br />
+                        <img class="plain" src="images/TYPO3-Logo-8bit_04.png" alt="Typo3" height="120" />
+                        <img class="plain" src="images/ez_publish_cms_hosting.png" alt="Ez Publish" height="120" />
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Contribute!</h2>
+                </section>
+
+                <section>
+                    <h1>Questions?</h1>
+
+                    <ul class="fragment">
+                        <li>symfony-cmf-devs@googlegroups.com</li>
+                        <li>cmf.symfony.com</li>
+                    </ul>
+                </section>
+
+			</div>
+
+            <footer>
+
+                <span class="pager">
+                    <span id="pagerCurrentSlide"></span> / <span id="pagerTotalSlides"></span>
+                </span>
+
+            </footer>
+
+		</div>
+
+		<script src="../lib/js/head.min.js"></script>
+		<script src="../js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: '../lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: '../plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: '../plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: '../plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+//                    , { src: 'socket.io/socket.io.js', async: true }
+//                    , { src: 'plugin/notes-server/client.js', async: true }
+//					,{ src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ],
+
+                keyboard: {
+                    66: 'toggleOverview'
+                }
+			});
+
+            function updatePager(current, total) {
+                var currentElement = document.getElementById('pagerCurrentSlide'),
+                    totalSlides = document.getElementById('pagerTotalSlides');
+
+                currentElement.innerText = current;
+                totalSlides.innerText = total;
+            }
+
+            function getTotalSlides() {
+                var horizontalSlides = document.querySelectorAll('.reveal .slides>section')
+                return parseInt(horizontalSlides.length, 10);
+            }
+
+            Reveal.addEventListener('slidechanged', function (event) {
+                updatePager(parseInt(event.indexh, 10) + 1, getTotalSlides());
+            });
+
+            updatePager(1, getTotalSlides());
+		</script>
+
+	</body>
+</html>

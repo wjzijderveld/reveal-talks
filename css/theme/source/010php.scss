@@ -1,0 +1,73 @@
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+
+
+// Include theme-specific fonts
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,700);
+@import url(http://fonts.googleapis.com/css?family=News+Cycle:400,700);
+
+
+// Override theme settings (see ../template/settings.scss)
+$mainFont: 'Roboto', sans-serif;
+$mainColor: #000;
+$headingFont: 'News Cycle', sans-serif;
+$headingColor: #0e8057;
+$headingTextShadow: none;
+$headingTextTransform: none;
+$backgroundColor: none;
+$linkColor: #00008B;
+$linkColorHover: lighten( $linkColor, 20% );
+$selectionBackgroundColor: rgba(55, 55, 55, 0.99);
+
+@mixin bodyBackground() {
+    background: -webkit-gradient( linear, left top, left bottom, color-stop(0%,#fff), color-stop(90%, #fff), color-stop(90%, $headingColor), color-stop(100%, $headingColor) );
+}
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------
+
+.reveal {
+
+    .topmargin {
+        margin-top: 40px;
+    }
+
+    .topmargin-80 {
+        margin-top: 80px;
+    }
+
+    .topmargin-120 {
+        margin-top: 120px;
+    }
+
+    .plain {
+        border: 0;
+        box-shadow: none;
+        list-style: none;
+    }
+
+    .who-is-using-cmf {
+        img {
+            margin: 25px;
+        }
+    }
+
+    footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 24px;
+        line-height: 30px;
+        .pager {
+            padding: 12px;
+            float: right;
+        }
+    }
+}
