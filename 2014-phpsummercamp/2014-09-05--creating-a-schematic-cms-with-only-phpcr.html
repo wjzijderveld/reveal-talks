@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Symfony CMF - by Willem-Jan Zijderveld</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../css/reveal.min.css">
+    <link rel="stylesheet" href="../css/theme/night.css" id="theme">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="../css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+        <script src="../lib/js/html5shiv.js"></script>
+        <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+        <section>
+          <h1>Creating a schematic CMS from scratch with only PHPCR</h1>
+          <h3 class="fragment">In just 3 hours...</h3>
+        </section>
+
+        <section>
+
+          <img src="img/logo.png" />
+
+          <h1>Creating a CMS from scratch</h1>
+
+          <p>By Daniel Leech and Willem-Jan Zijderveld</p>
+        </section>
+
+        <section>
+
+          <section>
+
+            <h2>About us</h2>
+
+            <div>
+
+              <img src="img/dantleech.jpg" />
+              <img src="img/wjzijderveld.jpg" />
+
+            </div>
+
+          </section>
+
+          <section>
+
+            <h2>Dan(iel) Leech</h2>
+
+            <ul>
+              <li>senior developer @massiveart</li>
+              <li>@dantleech</li>
+              <li>github.com/dantleech</li>
+              <li>dantleech.com</li>
+            </ul>
+
+          </section>
+
+           <section>
+
+             <h2>Willem-Jan Zijderveld</h2>
+
+             <ul>
+               <li>developer @ Qandidate.com</li>
+               <li>@willemjanz</li>
+               <li>github.com/wjzijderveld</li>
+               <li>blog.willem-jan.net</li>
+             </ul>
+
+           </section>
+
+        </section>
+
+        <section>
+
+          <h2>What to expect</h2>
+
+          <ul>
+            <li>
+              Introduction on PHPCR
+              <ul>
+                <li>History</li>
+                <li>Basic idea</li>
+                <li>Schemaless structure</li>
+              </ul>
+            </li>
+            <li>The workshop</li>
+
+          </ul>
+
+        </section>
+
+        <section>
+          <h2>History of PHPCR</h2>
+        </section>
+
+        <section>
+
+          <h2>A port from JSR-283<br>and JSR-333</h2>
+
+        </section>
+
+        <section data-background="img/background/typo3-phpcr.png">
+
+          <h2 class="inverse">TYPO3 started early 2008</h2>
+
+          <aside class="notes">
+            Liip joined in 2010
+          </aside>
+
+        </section>
+
+        <section>
+          <h2>Basic idea</h2>
+        </section>
+
+        <section>
+          <h2>PHP <span class="fragment">Content <span class="fragment">Repository</span></span></h2>
+
+          <blockquote class="fragment">A content repository is a store of digital content with an associated set of data management, search and access methods allowing application-independent access to the content with the ability to store and modify content in addition to searching and retrieving.</blockquote>
+        </section>
+
+        <section>
+          <h2>A set of interfaces</h2>
+          <p>No implementation</p>
+        </section>
+
+        <section>
+
+          <h2>Defines a API developers can write code against</h2>
+
+        </section>
+
+        <section data-background="img/background/phpcr-api-tests.png">
+
+          <h2>Implementations can be tested against the API tests</h2>
+
+        </section>
+
+        <section>
+          <h2>Storage independent</h2>
+        </section>
+
+        <section>
+          <h2>Comes with a set of tools</h2>
+
+          <ul>
+            <li>SQL2</li>
+            <li>CND</li>
+            <li>Console commands</li>
+            <li>Various helpers</li>
+        </section>
+
+        <section>
+          <h2>Hierarchical navigation structures</h2>
+
+          <p>A big tree of nodes</p>
+        </section>
+
+        <section>
+          <h2>Compound data</h2>
+
+          <p>For example: a webpage with images or documents as child nodes</p>
+        </section>
+
+        <section>
+
+          <h2>Schemaless</h2>
+
+        </section>
+
+        <section>
+
+          <h2>Structure with NodeTypes</h2>
+
+          <ul>
+            <li>nt:file</li>
+            <li>mix:versionable</li>
+            <li>nt:unstructured</li>
+          </ul>
+
+        </section>
+
+        <section>
+
+          <img src="img/phpcr-flowchart.png" />
+
+        </section>
+
+        <section>
+
+          <h2>Almost time to write code!</h2>
+
+          <p>Any questions so far?</p>
+
+        </section>
+
+        <section>
+
+          <h2>Jackalope with Jackrabbit</h2>
+
+          <p>Jackalope is a PHPCR implementation</p>
+          <p>Jackrabbit is the storage<span class="fragment"> using JCR</span></p>
+          <p>jackalope-jackrabbit is the transport layer</p>
+
+        </section>
+
+        <section>
+
+          <h2>Part 1</h2>
+          <p>Goal: Creating your first content with phpcr-shell<br>and serving it based on <code>REQUEST_URI</code></p>
+
+        </section>
+
+        <section>
+
+          <h2>Part 1</h2>
+
+          <p>Starting Jackrabbit and playing with PHPCR-shell</p>
+
+          <pre><code class="bash">$ cd /var/www/html/workshops/phpcr
+$ ./util/jackrabbit.sh start
+# Wait for it....
+$ phpcrsh -t jackrabbit</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>Part 1</h2>
+
+          <p>Basic commands to remember</p>
+
+          <ul>
+            <li>node:list</li>
+            <li>node:create</li>
+            <li>node:property:set</li>
+            <li>file:import</li>
+            <li>node-type:edit</li>
+            <li>workspace:use</li>
+            <li>session:save !!</li>
+          </ul>
+
+          <p><br><code>aliases</code> shows you a useful list with shortcuts</p>
+          <p><code>list</code> shows all available commands</p>
+
+        </section>
+
+        <section>
+
+          <p>Create some content, getting familiar with nodes and with phpcr-shell</p>
+
+          <ul>
+            <li>/cms
+              <ul>
+                <li>/homepage
+                  <ul>
+                    <li>title</li>
+                    <li>content</li>
+                  </ul>
+                </li>
+                <li>/about
+                  <ul>
+                    <li>title</li>
+                    <li>content</li>
+                  </ul>
+                </li>
+                <li>/press
+                  <ul>
+                    <li>title</li>
+                    <li>content</li>
+                    <li>/media
+                      <ul>
+                        <li>title</li>
+                        <li>content</li>
+                        <li>/image1 - files/anvil.gif</li>
+                        <li>/image2 - files/explosive-tennisballs.jpg</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li>/policy.pdf - policy.pdf</li>
+              </ul>
+            </li>
+          </ul>
+
+          <p><br><strong>Don't forget to run <code>save</code>!</strong></p>
+
+        </section>
+
+        <section>
+
+          <h2>Part 1.2</h2>
+
+          <p>Bootstrapping your application</p>
+          <p>Documentroot is set at <code>/var/www/html/workshops/phpcr/cms/web</code></p>
+
+          <ul>
+            <li><code>Jackalope\RepositoryFactoryJackrabbit</code></li>
+            <li>Login with <code>PHPCR\SimpleCredentials</code></li>
+          </ul>
+
+          <p><br></p>
+          <p class="fragment">Disclaimer: We are not here to write pretty code :-)</p>
+
+        </section>
+
+
+        <section>
+
+          <p>Retrieving a node based on the path of a node</p>
+
+          <p>http://phpcr.ezsc/&lt;path&gt;</p>
+
+          <pre><code class="php">$rootNode = $session->getRootNode();
+$cmsNode = $rootNode->getNode('cms');
+$currentNode = $cmsNode->getNode($path);
+$cmsNode->hasNode($path);
+$currentNode->isNodeType('nt:file');</code></pre>
+
+          <p>Skip nodes of type nt:file and make sure to handle unexisting nodes</p>
+
+        </section>
+
+        <section>
+
+          <h2>Part 2</h2>
+
+          <p>Goal: Creating and using mixins and access files from our browser</p>
+
+          <p>&nbsp;</p>
+          <p><small>Stuck on part 1? Stash your changes and run <code>git checkout part2 &amp;&amp; ./util/reset.sh part2</code></small></p>
+
+        </section>
+
+        <section>
+
+          <h3>Creating a mixin with CND</h3>
+
+          <ul>
+            <li>Name: mix:simple_page</li>
+            <lI>Required properties
+              <ul>
+                <li>title</li>
+                <li>content</li>
+              </ul>
+            </li>
+          </ul>
+
+        </section>
+
+        <section>
+
+          <pre><code class="bash">$ export EDITOR=vim</code></pre>
+
+          <pre><code class="bash">PHPCRSH &gt; node-type:edit mix:simple_page</code></pre>
+
+          <pre><code>&lt;mix = 'http://www.jcp.org/jcr/mix/1.0'&gt;
+[mix:simple_page] &gt; nt:unstructured
+orderable query mixin
+- title (string)
+mandatory
+- content (string)
+mandatory</code></pre>
+
+        </section>
+
+        <section>
+
+          <pre><code class="bash">PHPCRSH &gt; node:mixin:add /cms/homepage mix:simple_page</code></pre>
+
+          <p>When you haven't created title and content properties yet, you will get an error when saving the session</p>
+
+        </section>
+
+        <section>
+
+          <h2>Updating your code</h2>
+
+
+          <p>All nodes with <code>mix:simple_page</code> now<br>have a title and content property</p>
+
+          <pre><code class="php">$node->isNodeType('mix:simple_page');</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>Serving files</h2>
+
+          <pre><code class="php">$node->isNodeType('nt:file');
+$resource = $node->getNode('jcr:resource');
+$content = $resource->getProperty('jcr:data')->getString();
+$mimeType = $resource->getPropertyValue('jcr:mimeType');</code></pre>
+
+          <p>http://phpcr.ezsc/press/media/image1</p>
+
+        </section>
+
+        <section>
+          <h2>Part 3</h2>
+
+          <p>Goal: Using references to create a custom URL and create a menu</p>
+        </section>
+
+        <section>
+
+          <ul>
+            <li>Add the mixin <code>mix:referenceable</code> to <code>/cms/press/media</code></li>
+            <li>Create a new node under the root: /routes</li>
+            <li>Add a node <code>gallery</code></li>
+            <li>Add the property "<code>node</code>" with type <code>reference</code></li>
+            <li>Set the value of the property to the uuid of <code>/cms/press/media</code></li>
+          </ul>
+
+        </section>
+
+        <section>
+
+          <h2>Resolving the node</h2>
+
+          <pre><code class="php">$routesNode = $rootNode-&gt;getNode('routes');
+$route = $routesNode-&gt;getNode($path);
+$node = $route-&gt;getPropertyValue('node');</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>Creating a menu</h2>
+
+          <p>Create a new mixin: <code>mix:menuNode</code></p>
+
+          <pre><code>&lt;mix = 'http://www.jcp.org/jcr/mix/1.0'&gt;
+[mix:menuItem] &gt; nt:unstructured
+orderable query mixin
+- label (string)
+mandatory
+- path (string)
+mandatory
++ nt:unstructured (mix:menuItem)</code></pre>
+
+        </section>
+
+        <section>
+
+          <pre><code class="php">$menuNode = $rootNode-&gt;getNode('menu');
+foreach ($menuNode as $childNode) {
+  $path = $childeNode-&gt;getPropertyValue('path');
+  $label = $childNode-&gt;getPropertyValue('label');
+  echo '&lt;a href="' . $path .'"&gt;' . $label . '&lt;/a&gt;';
+}</code></pre>
+
+          <p>Bonus: Render your menu with recursion</p>
+
+        </section>
+
+        <section>
+
+          <h2>Part 4</h2>
+
+          <p>Goal: Implement versioning</p>
+
+        </section>
+
+        <section>
+
+          <h2>Save a version</h2>
+
+          <ul>
+            <li>Add the mixin <code>mix:versionable</code> to the nodes you want to version</li>
+            <li>Save your session</li>
+            <li>version:checkout <code>/cms/homepage</code></li>
+            <li>Change the title or content of your node</li>
+            <li>version:checkin <code>/cms/homepage</code></li>
+          </ul>
+
+        </section>
+
+        <section>
+
+          <h2>Retrieving the versions</h2>
+
+          <pre><code class="php">// Get the version manager
+$versionManager = $session-&gt;getWorkspace()
+  -&gt;getVersionManager();
+// retrieve version history for a node
+$versionHistory = $versionManager
+  -&gt;getVersionHistory($node-&gt;getPath());
+// Retrieve the latest version
+$currentVersion = $versionManager
+  -&gt;getBaseVersion($node-&gt;getPath());</code></pre>
+
+          <pre><code class="php">// retrieve all versions
+$versions = $versionHistory-&gt;getAllVersions();
+// retrieve a specific version
+$specificVersion = $versionHistory-&gt;getVersion('1.0');
+// Retrieve the node of the version
+$node = $version-&gt;getFrozenNode();</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>Everybody still awake?</h2>
+
+          <ul>
+            <li>Maybe try to implement a simple admin?</li>
+            <li>Or just play around</li>
+          </ul>,
+
+        </section>
+
+        <section>
+
+          <h2>That's all folks!</h2>
+
+          <p>Don't forget to vote to increase your chances at the raffle!</p>
+          <p>http://vote.netgenlabs.com/</p>
+
+        </section>
+      </div>
+    </div>
+
+    <div id="pagerCurrentSlide"></div>
+    <div id="pagerTotalSlides"></div>
+
+    <script src="../lib/js/head.min.js"></script>
+    <script src="../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: '../lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: '../plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: '../plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ],
+        keyboard: {
+          66: 'toggleOverview'
+        }
+      });
+
+      function updatePager(current, total) {
+          var currentElement = document.getElementById('pagerCurrentSlide'),
+              totalSlides = document.getElementById('pagerTotalSlides');
+
+          currentElement.innerText = current;
+          totalSlides.innerText = total;
+      }
+
+      function getTotalSlides() {
+          var horizontalSlides = document.querySelectorAll('.reveal .slides>section')
+          return parseInt(horizontalSlides.length, 10);
+      }
+
+      Reveal.addEventListener('slidechanged', function (event) {
+          updatePager(parseInt(event.indexh, 10) + 1, getTotalSlides());
+      });
+
+      updatePager(1, getTotalSlides());
+    </script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+.reveal .inverse {
+  color: #333;
+}
+
+.reveal pre code {
+  font-size: 18pt;
+  line-height: 24pt;
+}
