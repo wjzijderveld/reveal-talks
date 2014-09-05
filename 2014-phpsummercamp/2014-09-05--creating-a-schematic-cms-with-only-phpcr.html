@@ -41,17 +41,9 @@
       <div class="slides">
 
         <section>
-          <h1>Creating a schematic CMS from scratch with only PHPCR</h1>
-          <h3 class="fragment">In just 3 hours...</h3>
-        </section>
-
-        <section>
-
           <img src="img/logo.png" />
-
-          <h1>Creating a CMS from scratch</h1>
-
-          <p>By Daniel Leech and Willem-Jan Zijderveld</p>
+          <h2>Creating a schematic CMS from scratch with only PHPCR</h2>
+          <h3 class="fragment">In just 3 hours...</h3>
         </section>
 
         <section>
@@ -60,18 +52,24 @@
 
             <h2>About us</h2>
 
-            <div>
+          </section>
 
-              <img src="img/dantleech.jpg" />
-              <img src="img/wjzijderveld.jpg" />
+          <section>
 
-            </div>
+          <h2>Willem-Jan Zijderveld</h2>
+
+          <ul>
+            <li>developer @ Qandidate.com</li>
+            <li>@willemjanz</li>
+            <li>github.com/wjzijderveld</li>
+            <li>blog.willem-jan.net</li>
+          </ul>
 
           </section>
 
           <section>
 
-            <h2>Dan(iel) Leech</h2>
+            <h2>Daniel Leech</h2>
 
             <ul>
               <li>senior developer @massiveart</li>
@@ -81,19 +79,6 @@
             </ul>
 
           </section>
-
-           <section>
-
-             <h2>Willem-Jan Zijderveld</h2>
-
-             <ul>
-               <li>developer @ Qandidate.com</li>
-               <li>@willemjanz</li>
-               <li>github.com/wjzijderveld</li>
-               <li>blog.willem-jan.net</li>
-             </ul>
-
-           </section>
 
         </section>
 
@@ -110,7 +95,21 @@
                 <li>Schemaless structure</li>
               </ul>
             </li>
-            <li>The workshop</li>
+            <li>
+              The workshop
+              <ol>
+                <li>
+                  <ol>
+                    <li>Using PHPCR-Shell to create content</li>
+                    <li>Show some of the content</li>
+                  </ol>
+                </li>
+                <li>Mixins and handling files</li>
+                <li>Using referencing to createa menu</li>
+                <li>Implement versioning</li>
+                <li class="fragment">Playing around</li>
+              </ol>
+            </li>
 
           </ul>
 
@@ -144,6 +143,9 @@
           <h2>PHP <span class="fragment">Content <span class="fragment">Repository</span></span></h2>
 
           <blockquote class="fragment">A content repository is a store of digital content with an associated set of data management, search and access methods allowing application-independent access to the content with the ability to store and modify content in addition to searching and retrieving.</blockquote>
+
+          <p class="fragment">Or: A bunch of data that is easy accessible</p>
+
         </section>
 
         <section>
@@ -165,16 +167,20 @@
 
         <section>
           <h2>Storage independent</h2>
+
+          <aside class="notes">
+            DBAL, Jackrabbit, Midgard2, Mongo
+          </aside>
         </section>
 
         <section>
-          <h2>Comes with a set of tools</h2>
+          <h2>Comes with a set of utilities</h2>
 
           <ul>
             <li>SQL2</li>
             <li>CND</li>
             <li>Console commands</li>
-            <li>Various helpers</li>
+            <li>Various helpers (f.e. UUID)</li>
         </section>
 
         <section>
@@ -209,12 +215,6 @@
 
         <section>
 
-          <img src="img/phpcr-flowchart.png" />
-
-        </section>
-
-        <section>
-
           <h2>Almost time to write code!</h2>
 
           <p>Any questions so far?</p>
@@ -226,15 +226,27 @@
           <h2>Jackalope with Jackrabbit</h2>
 
           <p>Jackalope is a PHPCR implementation</p>
-          <p>Jackrabbit is the storage<span class="fragment"> using JCR</span></p>
+          <p>Jackrabbit is the storage</p>
           <p>jackalope-jackrabbit is the transport layer</p>
 
         </section>
 
         <section>
 
+          <h2>Where do we start?</h2>
+
+        </section>
+
+        <section>
+
+          <img src="img/phpcr-flowchart.png" />
+
+        </section>
+
+        <section>
+
           <h2>Part 1</h2>
-          <p>Goal: Creating your first content with phpcr-shell<br>and serving it based on <code>REQUEST_URI</code></p>
+          <p>Goal: Creating your first content with PHPCR-Shell<br>and serving it based on the <code>REQUEST_URI</code></p>
 
         </section>
 
@@ -247,7 +259,8 @@
           <pre><code class="bash">$ cd /var/www/html/workshops/phpcr
 $ ./util/jackrabbit.sh start
 # Wait for it....
-$ phpcrsh -t jackrabbit</code></pre>
+$ phpcrsh -t jackrabbit
+PHPCR &gt;</code></pre>
 
         </section>
 
@@ -262,8 +275,6 @@ $ phpcrsh -t jackrabbit</code></pre>
             <li>node:create</li>
             <li>node:property:set</li>
             <li>file:import</li>
-            <li>node-type:edit</li>
-            <li>workspace:use</li>
             <li>session:save !!</li>
           </ul>
 
@@ -274,20 +285,14 @@ $ phpcrsh -t jackrabbit</code></pre>
 
         <section>
 
-          <p>Create some content, getting familiar with nodes and with phpcr-shell</p>
+          <h3>Create some content, getting familiar with nodes and with PHPCR-Shell</h3>
 
           <ul>
-            <li>/cms
+            <li>/cms<br><code style="color:orange;font-size:70%;">node:create /cms</code>
               <ul>
                 <li>/homepage
                   <ul>
-                    <li>title</li>
-                    <li>content</li>
-                  </ul>
-                </li>
-                <li>/about
-                  <ul>
-                    <li>title</li>
+                    <li>title<br><code style="color:orange;font-size:70%;">node:property:set /cms/homepage/title &lt;title&gt;</code></li>
                     <li>content</li>
                   </ul>
                 </li>
@@ -295,11 +300,9 @@ $ phpcrsh -t jackrabbit</code></pre>
                   <ul>
                     <li>title</li>
                     <li>content</li>
-                    <li>/media
+                    <li>/media (also with title + media)
                       <ul>
-                        <li>title</li>
-                        <li>content</li>
-                        <li>/image1 - files/anvil.gif</li>
+                        <li>/image1 - files/anvil.gif<br><code style="font-size:70%; color: orange;">file:import /cms/press/media/image1 files/anvil.gif</code></li>
                         <li>/image2 - files/explosive-tennisballs.jpg</li>
                       </ul>
                     </li>
@@ -310,7 +313,7 @@ $ phpcrsh -t jackrabbit</code></pre>
             </li>
           </ul>
 
-          <p><br><strong>Don't forget to run <code>save</code>!</strong></p>
+          <p><br><strong>Don't forget to <code>session:save</code>!</strong></p>
 
         </section>
 
@@ -321,10 +324,12 @@ $ phpcrsh -t jackrabbit</code></pre>
           <p>Bootstrapping your application</p>
           <p>Documentroot is set at <code>/var/www/html/workshops/phpcr/cms/web</code></p>
 
-          <ul>
-            <li><code>Jackalope\RepositoryFactoryJackrabbit</code></li>
-            <li>Login with <code>PHPCR\SimpleCredentials</code></li>
-          </ul>
+          <pre><code class="php">$factory = new Jackalope\RepositoryFactoryJackrabbit();
+$repository = $factory-&gt;getRepository(array(
+  'jackalope.jackrabbit_uri' =&gt; 'http://localhost:8080/server'
+));
+$credentials = new \PHPCR\SimpleCredentials('admin', 'admin');
+$session = $repository->login($credentials, 'default');</code></pre>
 
           <p><br></p>
           <p class="fragment">Disclaimer: We are not here to write pretty code :-)</p>
@@ -334,17 +339,18 @@ $ phpcrsh -t jackrabbit</code></pre>
 
         <section>
 
+          <h2>Part 1.2</h2>
           <p>Retrieving a node based on the path of a node</p>
 
           <p>http://phpcr.ezsc/&lt;path&gt;</p>
 
-          <pre><code class="php">$rootNode = $session->getRootNode();
-$cmsNode = $rootNode->getNode('cms');
-$currentNode = $cmsNode->getNode($path);
-$cmsNode->hasNode($path);
-$currentNode->isNodeType('nt:file');</code></pre>
+          <pre><code class="php">$rootNode = $session->getRootNode(); // Jackalope\Node
+$cmsNode = $rootNode->getNode('cms'); // Jackalope\Node
+$currentNode = $cmsNode->getNode($path); // Jackalope\Node
+$cmsNode->hasNode($path); // true / false
+$currentNode->isNodeType('nt:file'); // true / false</code></pre>
 
-          <p>Skip nodes of type nt:file and make sure to handle unexisting nodes</p>
+          <p>Make sure to handle unexisting nodes</p>
 
         </section>
 
@@ -355,7 +361,7 @@ $currentNode->isNodeType('nt:file');</code></pre>
           <p>Goal: Creating and using mixins and access files from our browser</p>
 
           <p>&nbsp;</p>
-          <p><small>Stuck on part 1? Stash your changes and run <code>git checkout part2 &amp;&amp; ./util/reset.sh part2</code></small></p>
+          <p><small>Stuck on part 1? Run <code>git checkout -f part2 &amp;&amp; ./util/reset.sh part2</code></small></p>
 
         </section>
 
@@ -377,7 +383,7 @@ $currentNode->isNodeType('nt:file');</code></pre>
 
         <section>
 
-          <pre><code class="bash">$ export EDITOR=vim</code></pre>
+          <pre><code class="bash">$ export EDITOR=&lt;vim|nano|emacs&gt;</code></pre>
 
           <pre><code class="bash">PHPCRSH &gt; node-type:edit mix:simple_page</code></pre>
 
@@ -393,9 +399,11 @@ mandatory</code></pre>
 
         <section>
 
+          <h2>Add the mixin to our nodes</h2>
+
           <pre><code class="bash">PHPCRSH &gt; node:mixin:add /cms/homepage mix:simple_page</code></pre>
 
-          <p>When you haven't created title and content properties yet, you will get an error when saving the session</p>
+          <p style="color:orange;">When you haven't created title and content properties yet, you will get an error when saving the session</p>
 
         </section>
 
@@ -417,7 +425,9 @@ mandatory</code></pre>
           <pre><code class="php">$node->isNodeType('nt:file');
 $resource = $node->getNode('jcr:resource');
 $content = $resource->getProperty('jcr:data')->getString();
-$mimeType = $resource->getPropertyValue('jcr:mimeType');</code></pre>
+$mimeType = $resource->getPropertyValue('jcr:mimeType');
+header('Content-Type: ' . $mimeType);
+echo $content;</code></pre>
 
           <p>http://phpcr.ezsc/press/media/image1</p>
 
@@ -434,9 +444,9 @@ $mimeType = $resource->getPropertyValue('jcr:mimeType');</code></pre>
           <ul>
             <li>Add the mixin <code>mix:referenceable</code> to <code>/cms/press/media</code></li>
             <li>Create a new node under the root: /routes</li>
-            <li>Add a node <code>gallery</code></li>
-            <li>Add the property "<code>node</code>" with type <code>reference</code></li>
-            <li>Set the value of the property to the uuid of <code>/cms/press/media</code></li>
+            <li>Add a node <code>/routes/gallery</code></li>
+            <li>Add property "<code>node</code>" to /routes/gallery.<br>Value: UUID of <code>/cms/press/media</code>.<br>Type: <code>reference</code><br>
+              <code style="color:orange">PHPCRSH &gt; node:property:set --type=reference /routes/gallery/node &lt;UUID></code></li>
           </ul>
 
         </section>
@@ -446,8 +456,13 @@ $mimeType = $resource->getPropertyValue('jcr:mimeType');</code></pre>
           <h2>Resolving the node</h2>
 
           <pre><code class="php">$routesNode = $rootNode-&gt;getNode('routes');
-$route = $routesNode-&gt;getNode($path);
-$node = $route-&gt;getPropertyValue('node');</code></pre>
+// ..
+if ($routesNode->hasNode($path)) {
+  $route = $routesNode-&gt;getNode($path);
+  $node = $route-&gt;getPropertyValue('node'); // Jackalope\Node
+} elseif ($cmsNode->hasNode($path))  {
+  // .. load node from $cmsNode
+}</code></pre>
 
         </section>
 
@@ -471,13 +486,15 @@ mandatory
         <section>
 
           <pre><code class="php">$menuNode = $rootNode-&gt;getNode('menu');
-foreach ($menuNode as $childNode) {
-  $path = $childeNode-&gt;getPropertyValue('path');
-  $label = $childNode-&gt;getPropertyValue('label');
-  echo '&lt;a href="' . $path .'"&gt;' . $label . '&lt;/a&gt;';
-}</code></pre>
-
-          <p>Bonus: Render your menu with recursion</p>
+function renderMenu($menuNode) {
+  foreach ($menuNode as $childNode) {
+    $path = $childeNode-&gt;getPropertyValue('path');
+    $label = $childNode-&gt;getPropertyValue('label');
+    echo '&lt;a href="' . $path .'"&gt;' . $label . '&lt;/a&gt;';
+    if ($childNode->hasNodes()) renderMenu($childNode);
+  }
+}
+renderMenu($menuNode);</code></pre>
 
         </section>
 
@@ -485,7 +502,7 @@ foreach ($menuNode as $childNode) {
 
           <h2>Part 4</h2>
 
-          <p>Goal: Implement versioning</p>
+          <p>Goal: Implement versioning and switch between versions with a dropdown</p>
 
         </section>
 
@@ -495,10 +512,11 @@ foreach ($menuNode as $childNode) {
 
           <ul>
             <li>Add the mixin <code>mix:versionable</code> to the nodes you want to version</li>
-            <li>Save your session</li>
+            <li>session:save</li>
             <li>version:checkout <code>/cms/homepage</code></li>
-            <li>Change the title or content of your node</li>
+            <li>Change the title/content of your node</li>
             <li>version:checkin <code>/cms/homepage</code></li>
+            <li>session:save</li>
           </ul>
 
         </section>
@@ -523,6 +541,22 @@ $versions = $versionHistory-&gt;getAllVersions();
 $specificVersion = $versionHistory-&gt;getVersion('1.0');
 // Retrieve the node of the version
 $node = $version-&gt;getFrozenNode();</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>Switch between versions</h2>
+
+          <pre><code class="html php">
+&lt;form method="GET"&gt;
+ &lt;select name="version" onchange="this.form.submit();"&gt;
+ &lt;?php foreach ($versions as $version): ?&gt;
+  &lt;option value="&lt;?php echo $version-&gt;getName(); ?&gt;"&gt;
+   &lt;?php echo $version-&gt;getName(); ?&gt;
+  &lt;/option&gt;
+ &lt;/select&gt;
+</code></pre>
 
         </section>
 
