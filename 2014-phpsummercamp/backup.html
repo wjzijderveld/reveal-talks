@@ -275,6 +275,8 @@ PHPCR &gt;</code></pre>
             <li>node:create</li>
             <li>node:property:set</li>
             <li>file:import</li>
+            <li>node-type:edit</li>
+            <li>workspace:use</li>
             <li>session:save !!</li>
           </ul>
 
@@ -288,21 +290,23 @@ PHPCR &gt;</code></pre>
           <h3>Create some content, getting familiar with nodes and with PHPCR-Shell</h3>
 
           <ul>
-            <li>/cms<br><code style="color:orange;font-size:70%;">node:create /cms</code>
+            <li>/cms<code style="float:right;color:orange;font-size:70%;">node:create /cms</code>
               <ul>
                 <li>/homepage
                   <ul>
-                    <li>title<br><code style="color:orange;font-size:70%;">node:property:set /cms/homepage/title &lt;title&gt;</code></li>
+                    <li>title<code style="color:orange;font-size:70%;">node:property:set /cms/homepage/title &lt;title></code></li>
                     <li>content</li>
                   </ul>
                 </li>
-                <li>/press
+                <li>/about<br>..
+                </li>
+                <li>/press<br>..
                   <ul>
-                    <li>title</li>
-                    <li>content</li>
-                    <li>/media (also with title + media)
+                    <li>/media
                       <ul>
-                        <li>/image1 - files/anvil.gif<br><code style="font-size:70%; color: orange;">file:import /cms/press/media/image1 files/anvil.gif</code></li>
+                        <li>title</li>
+                        <li>content</li>
+                        <li>/image1 - files/anvil.gif</li>
                         <li>/image2 - files/explosive-tennisballs.jpg</li>
                       </ul>
                     </li>
@@ -313,7 +317,7 @@ PHPCR &gt;</code></pre>
             </li>
           </ul>
 
-          <p><br><strong>Don't forget to <code>session:save</code>!</strong></p>
+          <p><br><strong>Don't forget to run <code>save</code>!</strong></p>
 
         </section>
 
@@ -324,12 +328,10 @@ PHPCR &gt;</code></pre>
           <p>Bootstrapping your application</p>
           <p>Documentroot is set at <code>/var/www/html/workshops/phpcr/cms/web</code></p>
 
-          <pre><code class="php">$factory = new Jackalope\RepositoryFactoryJackrabbit();
-$repository = $factory-&gt;getRepository(array(
-  'jackalope.jackrabbit_uri' =&gt; 'http://localhost:8080/server'
-));
-$credentials = new \PHPCR\SimpleCredentials('admin', 'admin');
-$session = $repository->login($credentials, 'default');</code></pre>
+          <ul>
+            <li><code>Jackalope\RepositoryFactoryJackrabbit</code></li>
+            <li>Login with <code>PHPCR\SimpleCredentials</code></li>
+          </ul>
 
           <p><br></p>
           <p class="fragment">Disclaimer: We are not here to write pretty code :-)</p>
@@ -339,18 +341,17 @@ $session = $repository->login($credentials, 'default');</code></pre>
 
         <section>
 
-          <h2>Part 1.2</h2>
           <p>Retrieving a node based on the path of a node</p>
 
           <p>http://phpcr.ezsc/&lt;path&gt;</p>
 
-          <pre><code class="php">$rootNode = $session->getRootNode(); // Jackalope\Node
-$cmsNode = $rootNode->getNode('cms'); // Jackalope\Node
-$currentNode = $cmsNode->getNode($path); // Jackalope\Node
-$cmsNode->hasNode($path); // true / false
-$currentNode->isNodeType('nt:file'); // true / false</code></pre>
+          <pre><code class="php">$rootNode = $session->getRootNode();
+$cmsNode = $rootNode->getNode('cms');
+$currentNode = $cmsNode->getNode($path);
+$cmsNode->hasNode($path);
+$currentNode->isNodeType('nt:file');</code></pre>
 
-          <p>Make sure to handle unexisting nodes</p>
+          <p>Skip nodes of type nt:file and make sure to handle unexisting nodes</p>
 
         </section>
 
@@ -361,7 +362,7 @@ $currentNode->isNodeType('nt:file'); // true / false</code></pre>
           <p>Goal: Creating and using mixins and access files from our browser</p>
 
           <p>&nbsp;</p>
-          <p><small>Stuck on part 1? Run <code>git checkout -f part2 &amp;&amp; ./util/reset.sh part2</code></small></p>
+          <p><small>Stuck on part 1? Stash your changes and run <code>git checkout part2 &amp;&amp; ./util/reset.sh part2</code></small></p>
 
         </section>
 
@@ -383,7 +384,7 @@ $currentNode->isNodeType('nt:file'); // true / false</code></pre>
 
         <section>
 
-          <pre><code class="bash">$ export EDITOR=&lt;vim|nano&gt;</code></pre>
+          <pre><code class="bash">$ export EDITOR=vim</code></pre>
 
           <pre><code class="bash">PHPCRSH &gt; node-type:edit mix:simple_page</code></pre>
 
@@ -399,11 +400,9 @@ mandatory</code></pre>
 
         <section>
 
-          <h2>Add the mixin to our nodes</h2>
-
           <pre><code class="bash">PHPCRSH &gt; node:mixin:add /cms/homepage mix:simple_page</code></pre>
 
-          <p style="color:orange;">When you haven't created title and content properties yet, you will get an error when saving the session</p>
+          <p>When you haven't created title and content properties yet, you will get an error when saving the session</p>
 
         </section>
 
@@ -425,9 +424,7 @@ mandatory</code></pre>
           <pre><code class="php">$node->isNodeType('nt:file');
 $resource = $node->getNode('jcr:resource');
 $content = $resource->getProperty('jcr:data')->getString();
-$mimeType = $resource->getPropertyValue('jcr:mimeType');
-header('Content-Type: ' . $mimeType);
-echo $content;</code></pre>
+$mimeType = $resource->getPropertyValue('jcr:mimeType');</code></pre>
 
           <p>http://phpcr.ezsc/press/media/image1</p>
 
@@ -444,9 +441,9 @@ echo $content;</code></pre>
           <ul>
             <li>Add the mixin <code>mix:referenceable</code> to <code>/cms/press/media</code></li>
             <li>Create a new node under the root: /routes</li>
-            <li>Add a node <code>/routes/gallery</code></li>
-            <li>Add property "<code>node</code>" to /routes/gallery.<br>Value: UUID of <code>/cms/press/media</code>.<br>Type: <code>reference</code><br>
-              <code style="color:orange">PHPCRSH &gt; node:property:set --type=reference /routes/gallery/node &lt;UUID></code></li>
+            <li>Add a node <code>gallery</code></li>
+            <li>Add the property "<code>node</code>" with type <code>reference</code></li>
+            <li>Set the value of the property to the uuid of <code>/cms/press/media</code></li>
           </ul>
 
         </section>
@@ -456,13 +453,8 @@ echo $content;</code></pre>
           <h2>Resolving the node</h2>
 
           <pre><code class="php">$routesNode = $rootNode-&gt;getNode('routes');
-// ..
-if ($routesNode->hasNode($path)) {
-  $route = $routesNode-&gt;getNode($path);
-  $node = $route-&gt;getPropertyValue('node'); // Jackalope\Node
-} elseif ($cmsNode->hasNode($path))  {
-  // .. load node from $cmsNode
-}</code></pre>
+$route = $routesNode-&gt;getNode($path);
+$node = $route-&gt;getPropertyValue('node');</code></pre>
 
         </section>
 
@@ -486,15 +478,13 @@ mandatory
         <section>
 
           <pre><code class="php">$menuNode = $rootNode-&gt;getNode('menu');
-function renderMenu($menuNode) {
-  foreach ($menuNode as $childNode) {
-    $path = $childeNode-&gt;getPropertyValue('path');
-    $label = $childNode-&gt;getPropertyValue('label');
-    echo '&lt;a href="' . $path .'"&gt;' . $label . '&lt;/a&gt;';
-    if ($childNode->hasNodes()) renderMenu($childNode);
-  }
-}
-renderMenu($menuNode);</code></pre>
+foreach ($menuNode as $childNode) {
+  $path = $childeNode-&gt;getPropertyValue('path');
+  $label = $childNode-&gt;getPropertyValue('label');
+  echo '&lt;a href="' . $path .'"&gt;' . $label . '&lt;/a&gt;';
+}</code></pre>
+
+          <p>Bonus: Render your menu with recursion</p>
 
         </section>
 
@@ -502,7 +492,7 @@ renderMenu($menuNode);</code></pre>
 
           <h2>Part 4</h2>
 
-          <p>Goal: Implement versioning and switch between versions with a dropdown</p>
+          <p>Goal: Implement versioning and switch versions with a dropdown</p>
 
         </section>
 
@@ -512,11 +502,10 @@ renderMenu($menuNode);</code></pre>
 
           <ul>
             <li>Add the mixin <code>mix:versionable</code> to the nodes you want to version</li>
-            <li>session:save</li>
+            <li>Save your session</li>
             <li>version:checkout <code>/cms/homepage</code></li>
-            <li>Change the title/content of your node</li>
+            <li>Change the title or content of your node</li>
             <li>version:checkin <code>/cms/homepage</code></li>
-            <li>session:save</li>
           </ul>
 
         </section>
@@ -541,22 +530,6 @@ $versions = $versionHistory-&gt;getAllVersions();
 $specificVersion = $versionHistory-&gt;getVersion('1.0');
 // Retrieve the node of the version
 $node = $version-&gt;getFrozenNode();</code></pre>
-
-        </section>
-
-        <section>
-
-          <h2>Switch between versions</h2>
-
-          <pre><code class="html php">
-&lt;form method="GET"&gt;
- &lt;select name="version" onchange="this.form.submit();"&gt;
- &lt;?php foreach ($versions as $version): ?&gt;
-  &lt;option value="&lt;?php echo $version-&gt;getName(); ?&gt;"&gt;
-   &lt;?php echo $version-&gt;getName(); ?&gt;
-  &lt;/option&gt;
- &lt;/select&gt;
-</code></pre>
 
         </section>
 
