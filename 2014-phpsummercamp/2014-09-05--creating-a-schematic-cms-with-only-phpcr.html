@@ -470,8 +470,9 @@ if ($routesNode->hasNode($path)) {
 
           <h2>Creating a menu</h2>
 
-          <p>Create a new mixin: <code>mix:menuNode</code></p>
+          <p>Create a new mixin: <code>mix:menuItem</code></p>
 
+          <pre><code>node-type:edit mix:menuItem</code></pre>
           <pre><code>&lt;mix = 'http://www.jcp.org/jcr/mix/1.0'&gt;
 [mix:menuItem] &gt; nt:unstructured
 orderable query mixin
@@ -515,8 +516,8 @@ renderMenu($menuNode);</code></pre>
             <li>session:save</li>
             <li>version:checkout <code>/cms/homepage</code></li>
             <li>Change the title/content of your node</li>
-            <li>version:checkin <code>/cms/homepage</code></li>
             <li>session:save</li>
+            <li>version:checkin <code>/cms/homepage</code></li>
           </ul>
 
         </section>
