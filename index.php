@@ -53,7 +53,7 @@
 
     <?php
 
-        $directories = array('010php', '2014-phpsummercamp');
+        $directories = array('010php', '2013-pfcongres-uncon', '2014-phpsummercamp');
 
         foreach ($directories as $directory) {
             $talks = glob(__DIR__ . '/' . $directory . '/*.html');

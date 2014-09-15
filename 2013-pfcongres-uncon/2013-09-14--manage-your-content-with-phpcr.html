@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js - The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../css/reveal.min.css">
+		<link rel="stylesheet" href="../css/theme/moon.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="../lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="../css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+
+                    <h1>PHPCR</h1>
+                    <h3>A (better) way to structure your content</h3>
+
+                    <p>
+                        <small>PFCongres 2013 Uncon - 14 september 2013</small>
+                    </p>
+
+				</section>
+
+                <section id="about-me">
+
+                    <h2>Willem-Jan Zijderveld</h2>
+                    <h4>PHP Developer at <a href="http://beeldspraak.com">Beeldspraak</a></h4>
+
+                    <p>&nbsp;</p>
+                    <p>Twitter: <a href="http://twitter.com/willemjanz">@willemjanz</a></p>
+                    <p>Blog: <a href="http://blog.willem-jan.net">blog.willem-jan.net</a></p>
+                    <p>Github: <a href="https://github.com/wjzijderveld">github.com/wjzijderveld</a></p>
+                    <p>Email: <a href="mailto:wjzijderveld@gmail.com">wjzijderveld@gmail.com</a></p>
+
+                    <p class="fragment">
+                        <br /><br />
+                        <small>This is my very first talk, please be gentle</small>
+                    </p>
+
+                </section>
+
+                <section id="content">
+
+                    <h2>What's this talk about</h2>
+                    <h4>PHP Content Repository</h4>
+                    <uL>
+                        <li>Why would I need PHPCR</li>
+                        <li>What is PHPCR</li>
+                        <li>Who is using it</li>
+                        <li>When to use it</li>
+                        <li>When not to use it</li>
+                    </uL>
+
+                </section>
+
+                <section id="why-do-i-need-it">
+
+                    <h2>Why would I need PHPCR</h2>
+
+                    <ul>
+                        <li>CMS data isn't always structured</li>
+                        <li>NoSQL isn't always a fit, but has similarities</li>
+                        <li>Makes it easy to switch storage engines</li>
+                        <li>A lot of build-in features</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Examples unstructured: banners, attachments, extra content</li>
+                            <li>NoSQL doesn't work well for trees/graph, basic fulltext searching</li>
+                            <li>PHPCR just defines the transport, not the storage</li>
+                            <li>Workspaces, Versioning, Locking, Import/Export and more</li>
+                        </ul>
+                    </aside>
+
+                </section>
+
+
+                <section id="what-is-phpcr">
+
+                    <h2>What is PHPCR</h2>
+
+                    <ul>
+                        <li>Ported from <a href="http://jcp.org/en/jsr/detail?id=283">JCR-283</a> for TYPO3/Flow3
+                            <ul>
+                                <li>Removed JAVA overhead</li>
+                                <li>Added PHP specifics</li>
+                                <li>Some naming changed</li>
+                                <li>PHPCR Utils</li>
+                            </ul>
+                        </li>
+                        <li>Tree of nodes</li>
+
+                    </ul>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>It's a standard, 'just' a set of interfaces</li>
+                            <li>Typecasting in PHP is a whole lot easier then in JAVA</li>
+                            <li>Added Traversable and Iterators</li>
+                            <li>Removed some helper methods to avoid Object creation overhead</li>
+                            <li>Utils are created to help implementing: property type conversion, UUID generation, helpers</li>
+                        </ul>
+                    </aside>
+
+                </section>
+
+                <section id="nodes">
+
+                    <h2>What is PHPCR</h2>
+                    <h3>Nodes</h3>
+
+                    <ul>
+                        <li>Nodes have a name and a type</li>
+                        <li>A node has a path</li>
+                        <li>Nodes can have named properties with values</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <p>path is a parent path + node name</p>
+                        <p>names can be namedspaced</p>
+                        <p>A node type can dictate what type of children it can contain, nt:unstructured allowes everything. Can be used to create a 'schema'</p>
+                    </aside>
+
+                </section>
+
+                <section id="workspaces">
+
+                    <h2>What is PHPCR</h2>
+                    <h3>Workspaces</h3>
+
+                    <p>Can be compared with branches in a VCS or with a filesystem</p>
+
+                </section>
+
+                <section id="who-is-using-it">
+
+                    <h2>Who is using it</h2>
+
+                    <ul>
+                        <li>Jackalope (Jackrabbit/Doctrine-DBAL)
+                            <ul>
+                                <li>Symfony CMF</li>
+                                <li>ServerGrove KnowledgeBase</li>
+                                <li>TYPO3</li>
+                                <li>Vespolina and Sylius</li>
+                            </ul>
+                        </li>
+                        <li>Midgard2</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Symfony CMF, almost reaching 1.0</li>
+                            <li>eCommerce can use it to save f.e. product properties</li>
+                            <li>Midgard can be used for web but also desktop applications</li>
+                            <li>JAVA: Magnolia CMS</li>
+                        </ul>
+                    </aside>
+
+                </section>
+
+                <section id="when-to-use-it">
+
+                    <h2>When to use it</h2>
+
+                    <ul>
+                        <li>Hierarchical data</li>
+                        <li>With compound data; like attachments or translations</li>
+                        <li>When you need versioning</li>
+                        <li>When in need of FullText search</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Jackalope-Doctrine-DBAL doesn't support FulltextSearch yet :)</li>
+                        </ul>
+                    </aside>
+
+                </section>
+
+                <section id="when-not-to-use-it">
+
+                    <h2>When not to use it</h2>
+
+                    <ul>
+                        <li>Strict structured data</li>
+                        <li>Aggregation</li>
+                    </ul>
+
+                </section>
+
+                <section id="questions">
+
+                    <h1>Questions?</h1>
+
+                </section>
+
+			</div>
+
+		</div>
+
+		<script src="../lib/js/head.min.js"></script>
+		<script src="../js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: ',,.lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: '../plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: '../plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: '../plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
