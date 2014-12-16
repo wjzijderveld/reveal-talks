@@ -1,0 +1,9 @@
+digraph domain {
+  node [fontname=Arial];
+  Account -> CompanyAccount;
+  Application -> AccountApplication;
+  Account -> AccountApplication;
+  Company -> CompanyAccount;
+  Company -> CompanyApplications;
+  Application -> CompanyApplications;
+}

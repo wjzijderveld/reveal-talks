@@ -34,4 +34,50 @@ $selectionBackgroundColor: rgba(55, 55, 55, 0.99);
     left: 10px;
     max-height: 50px;
   }
+
+  table {
+    width: 100%;
+    th, td {
+      padding: 6px;
+      font-size: 0.85em;
+    }
+    &.border {
+      border-collapse: collapse;
+      td, th {
+        border-bottom: solid 1px $headingColor;
+      }
+      &.full {
+        border: solid 3px $headingColor;
+        td, th {
+          border-left: solid 3px $headingColor;
+        }
+      }
+      th {
+        border-width: 3px;
+      }
+    }
+  }
+
+  h1.large {
+    font-size: 6em;
+    background: rgba(255, 255, 255, 0.75)
+  }
+
+  .event {
+    display: block;
+    margin: 0 20% 1% 20%;
+    border: solid 3px #666;
+    border-radius: 5px;
+    background: #AAA;
+  }
+}
+
+.pager {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  color: #CCC;
+  div {
+    display: inline;
+  }
 }
