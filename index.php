@@ -25,6 +25,17 @@
         document.write('<link rel="stylesheet" href="css/print/' + ( window.location.search.match(/print-pdf/gi) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">');
     </script>
 
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-5505825-12', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
     <!--[if lt IE 9]>
     <script src="lib/js/html5shiv.js"></script>
     <![endif]-->
@@ -51,72 +62,69 @@
 
 </section>
 
-    <?php
+<?php
 
-        $directories = array('010php', '2013-pfcongres-uncon', '2014-phpsummercamp');
+$directories = glob(__DIR__ . '/talks/*', GLOB_ONLYDIR);
 
-        foreach ($directories as $directory) {
-            $talks = glob(__DIR__ . '/' . $directory . '/*.html');
-            foreach ($talks as $talkFilename) {
-                if (preg_match('/^(\d{4}\-\d{2}\-\d{2})\-\-(.*?)\.html$/', basename($talkFilename), $matches)) {
+foreach ($directories as $directory) {
+    $talks = glob($directory . '/*.html');
+    foreach ($talks as $talkFilename) {
+        if (preg_match('/^(\d{4}\-\d{2}\-\d{2})\-\-(.*?)\.html$/', basename($talkFilename), $matches)) {
 
-                    $date = new \DateTime($matches[1]);
+            $date = new \DateTime($matches[1]);
 
-                    $html = new DOMDocument();
-                    $html->strictErrorChecking = false;
-                    libxml_use_internal_errors(true);
-                    $html->loadHTMLFile($talkFilename);
-                    libxml_clear_errors();
-                    $xpath = new DOMXPath($html);
-                    $slide = $xpath->query('//section[position()=1]')->item(0);
-                    $title = $subtitle = '';
-                    if (!$slide->hasChildNodes()) {
-                        $title = ucwords(str_replace('-', ' ', $matches[2]));
-                    } else {
-                        $titleVar = 'title';
-                        foreach ($slide->childNodes as $childNode) {
-                            switch ($childNode->nodeName) {
-                                case 'img':
-                                    ${$titleVar} = $childNode->getAttribute('title');
-                                    break;
-                                case 'h1':
-                                case 'h2':
-                                case 'h3':
-                                case 'h4':
-                                    ${$titleVar} = $childNode->nodeValue;
-                                    break;
-                                default:
-                                    continue;
-                            }
-
-                            if ($title) {
-                                $titleVar = 'subtitle';
-                            }
-
-                            if ($subtitle) {
-                                break;
-                            }
-                        }
+            $html = new DOMDocument();
+            $html->strictErrorChecking = false;
+            libxml_use_internal_errors(true);
+            $html->loadHTMLFile($talkFilename);
+            libxml_clear_errors();
+            $xpath = new DOMXPath($html);
+            $slide = $xpath->query('//section[position()=1]')->item(0);
+            $title = $subtitle = '';
+            if (!$slide->hasChildNodes()) {
+                $title = ucwords(str_replace('-', ' ', $matches[2]));
+            } else {
+                $titleVar = 'title';
+                foreach ($slide->childNodes as $childNode) {
+                    switch ($childNode->nodeName) {
+                        case 'img':
+                            ${$titleVar} = $childNode->getAttribute('title');
+                            break;
+                        case 'h1':
+                        case 'h2':
+                        case 'h3':
+                        case 'h4':
+                            ${$titleVar} = $childNode->nodeValue;
+                            break;
+                        default:
+                            continue;
                     }
 
+                    if ($title) {
+                        $titleVar = 'subtitle';
+                    }
 
-                ?>
+                    if ($subtitle) {
+                        break;
+                    }
+                }
+            }
+            ?>
                     <section>
                         <h1><?php echo $title; ?></h1>
                         <?php if ($subtitle): ?>
                             <h2><?php echo $subtitle; ?></h2>
                         <?php endif; ?>
 
-                        <p><?php echo $directory; ?> - <?php echo $date->format('l, d-m-Y'); ?></p>
-                        <a href="<?php echo $directory; ?>/<?php echo basename($talkFilename); ?>">Watch slides</a>
+                        <p><?php echo basename($directory); ?> - <?php echo $date->format('l, d-m-Y'); ?></p>
+                        <a href="/talks/<?php echo basename($directory); ?>/<?php echo basename($talkFilename); ?>">Watch slides</a>
                     </section>
 
-                <?php
-                }
-            }
+            <?php
         }
-
-    ?>
+    }
+}
+?>
 
 </div>
 

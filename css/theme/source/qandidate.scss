@@ -1,0 +1,83 @@
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+
+
+// Include theme-specific fonts
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,700);
+@import url(http://fonts.googleapis.com/css?family=News+Cycle:400,700);
+
+
+// Override theme settings (see ../template/settings.scss)
+$mainFont: 'Roboto', sans-serif;
+$mainColor: #000;
+$headingFont: 'News Cycle', sans-serif;
+$headingColor: #089d9b;
+$headingTextShadow: none;
+$headingTextTransform: none;
+$backgroundColor: none;
+$linkColor: #00008B;
+$linkColorHover: lighten( $linkColor, 20% );
+$selectionBackgroundColor: rgba(55, 55, 55, 0.99);
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------
+
+.reveal {
+  .logo {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    max-height: 50px;
+  }
+
+  table {
+    width: 100%;
+    th, td {
+      padding: 6px;
+      font-size: 0.85em;
+    }
+    &.border {
+      border-collapse: collapse;
+      td, th {
+        border-bottom: solid 1px $headingColor;
+      }
+      &.full {
+        border: solid 3px $headingColor;
+        td, th {
+          border-left: solid 3px $headingColor;
+        }
+      }
+      th {
+        border-width: 3px;
+      }
+    }
+  }
+
+  h1.large {
+    font-size: 6em;
+    background: rgba(255, 255, 255, 0.75)
+  }
+
+  .event {
+    display: block;
+    margin: 0 20% 1% 20%;
+    border: solid 3px #666;
+    border-radius: 5px;
+    background: #AAA;
+  }
+}
+
+.pager {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  color: #CCC;
+  div {
+    display: inline;
+  }
+}
