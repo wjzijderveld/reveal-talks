@@ -28,6 +28,12 @@ $selectionBackgroundColor: rgba(55, 55, 55, 0.99);
 // ---------------------------------------------
 
 .reveal {
+
+  .fa {
+    font-family: FontAwesome;
+    font-style: normal;
+  }
+
   .logo {
     position: absolute;
     bottom: 10px;
@@ -59,7 +65,7 @@ $selectionBackgroundColor: rgba(55, 55, 55, 0.99);
   }
 
   h1.large {
-    font-size: 6em;
+    font-size: 4em;
     background: rgba(255, 255, 255, 0.75)
   }
 

@@ -1,0 +1,10 @@
+digraph domain {
+  graph [size="15,12!", scale="100"];
+  node [fontname=Arial];
+  Account -> CompanyAccount;
+  Application -> AccountApplication;
+  Account -> AccountApplication;
+  Company -> CompanyAccount;
+  Company -> CompanyApplications;
+  Application -> CompanyApplications;
+}
