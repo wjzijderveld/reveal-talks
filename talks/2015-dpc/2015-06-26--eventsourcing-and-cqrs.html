@@ -99,8 +99,8 @@
           <p>github.com/qandidate-labs/broadway</p>
 
           <aside class="notes">
-            Has been running in production for over a year<br>
-            Opensourced it 5 months ago
+            Has been running in production for well over a year<br>
+            Opensourced it almost a year ago
           </aside>
 
         </section>
@@ -269,7 +269,7 @@
 
         <section>
 
-          <h2>Boss: I want to know for which applications access got revoked more than once<br>in the last year</h2>
+          <h2>Boss: I want to know for which applications access got revoked <strong>more than once</strong><br>in the last year</h2>
 
           <aside class="notes">
             If you would actually have the data<br>
@@ -405,7 +405,7 @@
 
           <h1>Event Sourcing + CQRS + DDD</h1>
           <p>That is a lot to cover in one slot</p>
-          <p class="fragment">Each can be used on its own</p>
+          <p class="fragment">All 3 are optional, but work very nice together</p>
 
           <aside class="notes">
             We will touch it when needed
@@ -429,7 +429,7 @@
 
           <h1>Entity</h1>
 
-          <p>An object with an identity</p>
+          <p>An model with an identity</p>
 
         </section>
 
@@ -443,14 +443,8 @@
             Aggregate is a collection of one or more objects with identity.<br>
             Multiple aggregates are bound by an aggregate root<br>
             The aggregate root guarantees the consistency of it's inner objects<br>
-            All changes happen via the aggregate root
+            All changes happen via the aggregate root!
           </aside>
-
-        </section>
-
-        <section>
-
-          <h1>Repository</h1>
 
         </section>
 
@@ -477,8 +471,105 @@
         </section>
 
         <section>
+         
+          <h3>You normally might do it like this</h3>
+          <pre><code class="php">&lt;?php // Company.php
+public function __construct($id, $name)
+{
+  $this-&gt;id = $id;
+  $this-&gt;name = $name;
+}</pre></code>
 
-          <h1>DomainMessage</h1>
+        </section>
+
+        <section>
+          <h1>But we want to record an event</h1>
+        </section>
+
+        <section>
+
+          <pre><code class="php">&lt;?php // Company.php
+public static function register($id, $name) 
+{
+  $company = new Company();
+  $company-&gt;apply(
+    new CompanyRegisteredEvent($id, $name)
+  );
+}</pre></code>
+
+        </section>
+
+        <section>
+          <h1>Record the events</h1>
+
+          <pre><code class="php">&lt;php // AggregateRoot.php
+public function apply($event)
+{
+  $this-&gt;handle($event);
+  $this-&gt;uncommitedEvents[] = $event;
+}
+</code></pre>
+
+<pre><code class="php">private function handle($event)
+{
+  $classParts = explode('\\', $event);
+  $method = 'apply' . end($classParts);
+  $this->$method($event);
+}</code></pre>
+        <p class="fragment">Just one possible implementation</p>
+        </section>
+
+        <section>
+          <pre><code class="php">public function applyCompanyRegisteredEvent(
+  CompanyRegisteredEvent $event
+) {
+  $this-&gt;companyId = $event-&gt;getCompanyId();
+  $this-&gt;companyName = $event-&gt;getCompanyName();
+}</code></pre>
+        </section>
+
+        <section>
+
+          <h1>Save your events in an eventstore</h1>
+
+          <aside class="notes">
+            - Serialize and deserialize events<br>
+- identify all events for an aggregate
+- Make sure you save the order of the events</aside>
+
+        </section>
+
+        <section>
+          <h1>Reloading your model</h1>
+        </section>
+
+        <section>
+          <pre><code class="php">&lt;php // CompanyRepository.php
+function load($aggregateId)
+{
+  $events = $this-&gt;eventStore-&gt;load($aggregateId);
+
+  $aggregate = new $this-&gt;aggregateClass();
+  $aggregate-&gt;initializeState($events);
+
+  return $aggregate;
+}</code></pre>
+        </section>
+
+        <section>
+          <pre><code class="php">&lt?php // Company.php
+public function initializeState(array $events)
+{
+  foreach ($events as $event)
+  {
+    $this-&gt;handle($event);
+  }
+}</code></pre>
+        </section>
+
+        <section>
+
+          <h1>Domain Message</h1>
           <p>A message to tell your application what happened</p>
 
         </section>
@@ -489,21 +580,20 @@
           <ul>
             <li>Identifier</li>
             <li>Sequencenumber</li>
-            <li>Event</li>
+            <li>Payload</li>
             <li>Timestamp</li>
             <li>Metadata</li>
           </ul>
 
           <aside class="notes">
-            - Identifier and sequencenumber for the Aggregate root.<br>
-
+          I'll explain each of these
           </aside>
 
         </section>
 
         <section>
 
-          <h1>Identifier + sequencenumber</h1>
+          <h1>Identifier + sequence number</h1>
 
           <aside class="notes">
             Tells you for what aggregate it happened
@@ -515,8 +605,8 @@
 
         <section>
 
-          <h1>Event</h1>
-          <h2>It tells you <strong>what</strong> happened</h2>
+          <h1>Payload</h1>
+          <h2>The event itself, it tells you <strong>what</strong> happened</h2>
 
         </section>
 
@@ -568,18 +658,7 @@
 
         <section>
 
-          <h1>Apply the event</h1>
-
-          <br><img src="img/restart-computer.png" />
-
-          <aside class="notes">
-            - When applying the event, you tell the aggregate root
-              to apply any required changes.
-          </aside>
-
-        </section>
-
-        <section>
+          <h1>Let's look at some other events</h1>
 
           <div class="event">CompanyRegistered</div>
           <div class="event">AppEnabled</div>
@@ -590,11 +669,12 @@
 
         <section>
 
-          <h2>CompanyRegisteredEvent</h2>
+          <h2>CompanyRegistered</h2>
 
           <pre><code class="php">// Company
-function applyCompanyRegisteredEvent(CompanyRegisteredEvent $event)
-{
+function applyCompanyRegisteredEvent(
+  CompanyRegisteredEvent $event
+) {
   $this-&gt;companyId = $event-&gt;getCompanyId();
 }</code></pre>
 
@@ -602,32 +682,43 @@ function applyCompanyRegisteredEvent(CompanyRegisteredEvent $event)
 
         <section>
 
-          <h2>AccountConnectedEvent</h2>
+          <h2>AccountConnected</h2>
 
           <pre><code class="php">// Company
-function applyAccountConnectedEvent(AccountConnectedEvent $event)
-{
-  $this-&gt;accounts[$event-&gt;getAccountId()] = $event-&gt;getAccountId();
+function applyAccountConnectedEvent(
+  AccountConnectedEvent $event
+) {
+  $id = $event-&gt;getAccountId();
+  $this-&gt;accounts[$id] = $event-&gt;getAccountId();
 }</code></pre>
 
         </section>
 
         <section>
 
-          <h2>AppEnabledEvent</h2>
+          <h2>AppEnabled</h2>
 
           <pre><code class="php">// Company
-function applyAppEnabledEvent(AppEnabledEvent $event)
-{
-  $subscription = new Subscription($this-&gt;companyId, $event-&gt;getAppId());
-  $this-&gt;subscriptions[$event-&gt;getAppId()] = $subscription;
+function applyAppEnabledEvent(
+  AppEnabledEvent $event
+) {
+  $subscription = new Subscription(
+    $event-&gt;getCompanyId(), 
+    $event-&gt;getAppId()
+  );
+  $this-&gt;subscriptions[$event-&gt;getAppId()] =
+    $subscription;
 }</code></pre>
+
+          <aside class="notes">
+            - Creating a child Entity<br>
+          </aside>
 
         </section>
 
         <section>
 
-          <h2>AccessGrantedToAppEvent</h2>
+          <h2>AccessGrantedToApp</h2>
 
           <pre><code class="php">// Company
 public function getChildEntities()
@@ -636,15 +727,27 @@ public function getChildEntities()
 }</code></pre>
 
           <pre><code class="php">// Subscription
-function applyAccessGrantedToAppEvent(AccessGrantedToAppEvent $event)
-{
+function applyAccessGrantedToAppEvent(
+  AccessGrantedToAppEvent $event
+) {
   if ($this-&gt;appId !== $event-&gt;getAppId()) {
     return;
   }
 
-  $this-&gt;grantedAccounts[$event-&gt;getAccountId()] = $event-&gt;getAccountId();
+  $accountId = $event-&gt;getAccountId();
+  $this-&gt;grantedAccounts[$accountId] =
+    $event-&gt;getAccountId();
 }</code></pre>
 
+        </section>
+
+        <section>
+          <h1>We can retrieve all <strong>AccessGranted </strong>events for <strong>December</strong></h1>
+
+          <aside class="notes">
+            - Remember when the boss asked for accounts that received access in december?<br>
+            - The same goes for AccessRevoked events<br>
+          - Specific events can tell us why it was revoked</aside>
         </section>
 
         <section>
@@ -656,6 +759,79 @@ function applyAccessGrantedToAppEvent(AccessGrantedToAppEvent $event)
           </aside>
 
         </section>
+
+        <section>
+          <h1>Won't this be slow?</h1>
+        </section>
+
+        <section>
+          <h1>CQRS</h1>
+
+          <h4>Command Query Responsibility Segregation</h4>
+        </section>
+
+        <section>
+          <h1>Separate your <strong>writes</strong> and your <strong>reads</strong></h1>
+        </section>
+
+        <section>
+          <h1>Read Models</h1>
+
+          <h3>Create them from the events using projections</h3>
+
+          <aside class="notes">
+          - Create read models to create views
+          - Let projectors listen to events
+          </aside>
+        </section>
+
+        <section>
+
+          <h2>CompanyRegistration</h2>
+
+          <pre><code class="php">class CompanyRegistration implements ReadModel
+{
+  public function __construct(
+    $companyId,
+    $companyName,
+    DateTime $registeredOn
+  ) {
+    // ..
+  }
+}</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>Company Registration Projector</h2>
+
+          <pre><code class="php">class CompanyRegistrationProjector
+{
+  public function applyCompanyRegisteredEvent(
+    CompanyRegisteredEvent $event,
+    DomainMessage $domainMessage
+  ) {
+    $company = new CompanyRegistration(
+      $event-&gt;getCompanyId(),
+      $event-&gt;getCompanyName(),
+      $domainMessage-&gt;getRecordedOn()
+    );
+
+    $this-&gt;repository-&gt;save($company);
+  }
+}
+          </code></pre>
+
+        </section>
+
+        <section>
+          <h1>So.. how does this flow work in an application?</h1>
+
+          <h3 class="fragment">We'll use Commands</h3>
+        </section>
+
+
 <!--
         <section>
 
@@ -774,57 +950,6 @@ function applyAccessGrantedToAppEvent(AccessGrantedToAppEvent $event)
             You could replay all events until you rebuild all aggregates.<br>
             The query part of CQRS.
           </aside>
-
-        </section>
-
-        <section>
-
-          <h1>Creating read models</h1>
-          <p>Listen to the events</p>
-
-        </section>
-
-        <section>
-
-          <h2>CompanyRegistration</h2>
-
-          <pre><code class="php">class CompanyRegistration implements ReadModel
-{
-  private $companyId;
-  private $companyName;
-  private $registeredOn;
-
-  public function __construct(
-    CompanyId $companyId,
-    CompanyName $companyName,
-    DateTime $dateTime
-  ) {
-    // ..
-  }
-}</code></pre>
-
-        </section>
-
-        <section>
-
-          <h2>CompanyRegistrationProjector</h2>
-
-          <pre><code class="php">class CompanyRegistrationProjector
-{
-  public function applyCompanyRegisteredEvent(
-    CompanyRegisteredEvent $event,
-    DomainMessage $domainMessage
-  ) {
-    $company = new CompanyRegistration(
-      $event-&gt;getCompanyId(),
-      $event-&gt;getCompanyName(),
-      $domainMessage-&gt;getRecordedOn()
-    );
-
-    $this-&gt;repository-&gt;save($company);
-  }
-}
-          </code></pre>
 
         </section>
 

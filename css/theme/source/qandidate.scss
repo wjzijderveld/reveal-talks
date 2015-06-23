@@ -41,6 +41,10 @@ $selectionBackgroundColor: rgba(55, 55, 55, 0.99);
     max-height: 50px;
   }
 
+  pre {
+    font-size: 0.65em;
+  }
+
   table {
     width: 100%;
     th, td {
@@ -62,6 +66,14 @@ $selectionBackgroundColor: rgba(55, 55, 55, 0.99);
         border-width: 3px;
       }
     }
+  }
+
+  h1 {
+    font-size: 2.5em;
+  }
+
+  h2 {
+    font-size: 1.75em;
   }
 
   h1.large {
