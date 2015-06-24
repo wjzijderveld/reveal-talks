@@ -43,7 +43,7 @@
       ga('send', 'pageview');
 
     </script>
-    
+
     <link rel="stylesheet" href="../../css/font-awesome.min.css">
 
     <!--[if lt IE 9]>
@@ -471,7 +471,7 @@
         </section>
 
         <section>
-         
+
           <h3>You normally might do it like this</h3>
           <pre><code class="php">&lt;?php // Company.php
 public function __construct($id, $name)
@@ -489,7 +489,7 @@ public function __construct($id, $name)
         <section>
 
           <pre><code class="php">&lt;?php // Company.php
-public static function register($id, $name) 
+public static function register($id, $name)
 {
   $company = new Company();
   $company-&gt;apply(
@@ -703,7 +703,7 @@ function applyAppEnabledEvent(
   AppEnabledEvent $event
 ) {
   $subscription = new Subscription(
-    $event-&gt;getCompanyId(), 
+    $event-&gt;getCompanyId(),
     $event-&gt;getAppId()
   );
   $this-&gt;subscriptions[$event-&gt;getAppId()] =
@@ -777,7 +777,7 @@ function applyAccessGrantedToAppEvent(
         <section>
           <h1>Read Models</h1>
 
-          <h3>Create them from the events using projections</h3>
+          <h3>Create them from events using projections</h3>
 
           <aside class="notes">
           - Create read models to create views
@@ -807,6 +807,7 @@ function applyAccessGrantedToAppEvent(
           <h2>Company Registration Projector</h2>
 
           <pre><code class="php">class CompanyRegistrationProjector
+  implements EventListener
 {
   public function applyCompanyRegisteredEvent(
     CompanyRegisteredEvent $event,
@@ -817,11 +818,9 @@ function applyAccessGrantedToAppEvent(
       $event-&gt;getCompanyName(),
       $domainMessage-&gt;getRecordedOn()
     );
-
     $this-&gt;repository-&gt;save($company);
   }
-}
-          </code></pre>
+}</code></pre>
 
         </section>
 
@@ -831,11 +830,13 @@ function applyAccessGrantedToAppEvent(
           <h3 class="fragment">We'll use Commands</h3>
         </section>
 
+        <section>
+          <h1>The <strong>write</strong> part of CQRS</h1>
+        </section>
 
-<!--
         <section>
 
-          <h2>Commands &amp; CommandHandler</h2>
+          <h2>Command &amp; CommandHandler</h2>
           <p>A CommandHandler deals with Commands and communicates with the Aggregate root</p>
 
           <aside class="notes">
@@ -845,19 +846,21 @@ function applyAccessGrantedToAppEvent(
           </aside>
 
         </section>
--->
+
         <section>
 
           <h2>From Controller<br>to CommandHandler</h2>
 
           <pre><code class="php">class CompanyController
 {
-  function createAction(Request $request)
+  function registerAction(Request $request)
   {
-    $this-&gt;commandBus-&gt;dispatch(new RegisterCompanyCommand(
-      new CompanyId(Uuid::uuid4()),
-      new CompanyName($request-&gt;request-&gt;get('companyName'))
-    ));
+    $this-&gt;commandBus-&gt;dispatch(
+      new RegisterCompanyCommand(
+        Uuid::uuid4(),
+        $request-&gt;request-&gt;get('companyName')
+      )
+    );
   }
 }</code></pre>
 
@@ -874,8 +877,9 @@ function applyAccessGrantedToAppEvent(
 
           <pre><code class="php">class CompanyCommandHandler
 {
-  function handleRegisterCompanyCommand(RegisterCompanyCommand $command)
-  {
+  function handleRegisterCompanyCommand(
+    RegisterCompanyCommand $command
+  ) {
     $company = Company::register(
       $command-&gt;getCompanyId(),
       $command-&gt;getCompanyName()
@@ -896,20 +900,18 @@ function applyAccessGrantedToAppEvent(
 
           <h2>From Aggregate to Event</h2>
 
-          <pre><code class="php">class Company extends EventSourcedAggregateRoot
+          <pre><code class="php">public static function register($companyId, $name)
 {
-  public static function register(CompanyId $companyId, CompanyName $name)
-  {
-    $company = new Company();
-    $company-&gt;apply(new CompanyRegisteredEvent($companyId, $name));
+  $company = new Company();
+  $company-&gt;apply(
+    new CompanyRegisteredEvent($companyId, $name)
+  );
 
-    return $company;
-  }
-
-  public function applyCompanyRegisteredEvent(/**/ $event)
-  {
-    $this-&gt;companyId = $event-&gt;getCompanyId();
-  }
+  return $company;
+}</code></pre><pre><code class="php">public function applyCompanyRegisteredEvent(
+  CompanyRegisteredEvent $event
+) {
+  $this-&gt;companyId = $event-&gt;getCompanyId();
 }</code></pre>
 
           <aside class="notes">
@@ -920,35 +922,29 @@ function applyAccessGrantedToAppEvent(
 
         </section>
 
+
+        <section>
+          <h1>Testing</h1>
+        </section>
+
         <section>
 
           <h2>Scenario based testing</h2>
 
           <pre><code class="php">$this-&gt;scenario
   -&gt;given([
-    new CompanyRegisteredEvent(new CompanyId(123))
+    new CompanyRegisteredEvent(123)
   ])
   -&gt;when(function ($company) {
-    $company-&gt;enableApp(new AppId(42));
+    $company-&gt;enableApp(42);
   })
   -&gt;then([
-    new AppEnabledEvent(new AppId(42), new CompanyId(123))
+    new AppEnabledEvent(42, 123)
   ]);</code></pre>
 
           <aside class="notes">
             Would be relatively easy to accomplish<br>
             Lots of alternatives possible
-          </aside>
-
-        </section>
-
-        <section>
-
-          <h1><strong>How</strong> to create a <strong>list of companies</strong></h1>
-
-          <aside class="notes">
-            You could replay all events until you rebuild all aggregates.<br>
-            The query part of CQRS.
           </aside>
 
         </section>
