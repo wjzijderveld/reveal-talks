@@ -403,7 +403,9 @@
 
         <section>
 
-          <h1>Event Sourcing + CQRS + DDD</h1>
+          <h1>Event Sourcing</h1>
+          <h1>DDD</h1>
+          <h1>CQRS</h1>
           <p>That is a lot to cover in one slot</p>
           <p class="fragment">All 3 are optional, but work very nice together</p>
 
@@ -495,6 +497,7 @@ public static function register($id, $name)
   $company-&gt;apply(
     new CompanyRegisteredEvent($id, $name)
   );
+  return $company;
 }</pre></code>
 
         </section>
@@ -607,14 +610,6 @@ public function initializeState(array $events)
 
           <h1>Payload</h1>
           <h2>The event itself, it tells you <strong>what</strong> happened</h2>
-
-        </section>
-
-        <section>
-
-          <h2>The name should be descriptive</h2>
-
-          <aside class="notes">Applies to DDD</aside>
 
         </section>
 
@@ -825,6 +820,36 @@ function applyAccessGrantedToAppEvent(
         </section>
 
         <section>
+
+          <h1>Use the right tool for the right job</h1>
+
+          <aside class="notes">
+            Need to search a lot? Use f.e. Elasticsearch<br>
+            Need more insights in relations? Use f.e. Neo4j<br>
+            Nothing is stopping you
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1><strong>Possibilities</strong> are endless</h1>
+
+        </section>
+
+        <section>
+
+          <h2>The ability to create multiple read models</h2>
+
+          <ul>
+            <li class="fragment">List of company registrations</li>
+            <li class="fragment">Graph of all connections between companies and accounts</li>
+            <li class="fragment">Creating reports about the amount of revocations</li>
+          </ul>
+
+        </section>
+
+        <section>
           <h1>So.. how does this flow work in an application?</h1>
 
           <h3 class="fragment">We'll use Commands</h3>
@@ -922,14 +947,75 @@ function applyAccessGrantedToAppEvent(
 
         </section>
 
+        <section>
+          <h1>From Aggregate Repository to EventStore</h1>
+
+          <pre><code class="php">// CopanyRegistry.php
+function save($aggregate)
+{
+  $events = $aggregate-&gt;getUncommittedEvents();
+  $this-&gt;conn-&gt;startTransaction();
+  foreach ($events as $event) {
+    $this-&gt;insertEvent($event);
+  }
+  $this-&gt;conn-&gt;commit();
+}</code></pre>
+        </section>
+
+        <section>
+          <h2>From event to read model</h2>
+
+          <pre><code class="php">class CompanyRegistrationProjector {
+  public function applyCompanyRegisteredEvent(
+    CompanyRegisteredEvent $event,
+    DomainMessage $domainMessage
+  ) {
+    $company = new CompanyRegistration(
+      $event-&gt;getCompanyId(),
+      $event-&gt;getCompanyName(),
+      $domainMessage-&gt;getRecordedOn()
+    );
+    $this-&gt;repository-&gt;save($company);
+  }
+}</code></pre>
+        </section>
+
+        <section>
+          <h1>Quit a bit to chew</h1>
+
+          <p class="fragment">Try not to reinvent everything yourself</p>
+        </section>
 
         <section>
           <h1>Testing</h1>
+          <h2>Scenario based testing</h2>
+
+          <p class="fragment">Given - When - Then</p>
         </section>
 
         <section>
 
-          <h2>Scenario based testing</h2>
+          <h1>Test your Command Handler</h1>
+
+          <pre><code class="php">$this-&gt;scenario
+  -&gt;given([
+    new CompanyRegisteredEvent(123)
+  ])
+  -&gt;when(new EnableAppForCompanyCommand(42, 123))
+  -&gt;then([
+    new AppEnabledEvent(42, 123)
+  ]);</code></pre>
+
+          <aside class="notes">
+            Would be relatively easy to accomplish<br>
+            Lots of alternatives possible
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Or your aggregate</h1>
 
           <pre><code class="php">$this-&gt;scenario
   -&gt;given([
@@ -950,55 +1036,16 @@ function applyAccessGrantedToAppEvent(
         </section>
 
         <section>
+          <h1>Don't forget your read models</h1>
 
-          <h1>Combine <strong>different</strong> read model repositories</h1>
-
-        </section>
-
-        <section>
-
-          <h1>Use the right tool for the right job</h1>
-
-          <aside class="notes">
-            Need to search a lot? Use f.e. Elasticsearch<br>
-            Need more insights in relations? Use f.e. Neo4j<br>
-            Nothing is stopping you
-          </aside>
-
-        </section>
-
-        <section>
-
-          <h2>Another scenario test</h2>
-
-          <pre><code class="php">class CompanyRegistrationProjectorTest
-{
-  public function it_creates_a_company_registration()
-  {
-    $this-&gt;scenario
-      -&gt;given([])
-      -&gt;when(new CompanyRegistered('123', 'Acme Inc.'), $dateTime)
-      -&gt;then([new CompanyRegistration('123', 'Acme Inc.', $dateTime)]);
-  }
-}</code></pre>
-
-        </section>
-
-        <section>
-
-          <h1><strong>Possibilities</strong> are endless</h1>
-
-        </section>
-
-        <section>
-
-          <h2>The ability to create multiple read models</h2>
-
-          <ul>
-            <li class="fragment">List of company registrations</li>
-            <li class="fragment">Graph of all connections between companies and accounts</li>
-            <li class="fragment">Creating reports about the amount of revocations</li>
-          </ul>
+          <pre><code class="php">$this-&gt;scenario
+  -&gt;given([])
+  -&gt;when(
+    new CompanyRegisteredEvent(123, 'Acme Inc')
+  )
+  -&gt;then([
+    new CompanyRegistration(123, 'Acme Inc')
+  ]);</code></pre>
 
         </section>
 
