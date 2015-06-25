@@ -773,6 +773,7 @@ function applyAccessGrantedToAppEvent(
           <h1>Read Models</h1>
 
           <h3>Create them from events using projections</h3>
+          <p>Specific read models for specific views in your application</p>
 
           <aside class="notes">
           - Create read models to create views
@@ -950,15 +951,12 @@ function applyAccessGrantedToAppEvent(
         <section>
           <h1>From Aggregate Repository to EventStore</h1>
 
-          <pre><code class="php">// CopanyRegistry.php
+          <pre><code class="php">// CompanyRegistry.php
 function save($aggregate)
 {
   $events = $aggregate-&gt;getUncommittedEvents();
-  $this-&gt;conn-&gt;startTransaction();
-  foreach ($events as $event) {
-    $this-&gt;insertEvent($event);
-  }
-  $this-&gt;conn-&gt;commit();
+  $this-&gt;eventStore-&gt;append($aggregate-&gt;getAggregateId(), $events);
+  $this-&gt;eventBus-&gt;publish($events);
 }</code></pre>
         </section>
 
