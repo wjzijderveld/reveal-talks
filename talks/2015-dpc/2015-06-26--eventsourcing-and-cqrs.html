@@ -205,6 +205,8 @@
           <h1>"We'll add a timestamp<br>and we will know"</h1>
           <p class="fragment">From that point in time</p>
 
+          <aside class="notes">Timestamp in your join-table.. fun stuff</aside>
+
         </section>
 
         <section>
@@ -240,7 +242,7 @@
 
           <aside class="notes">
             Was it a manual action?<br>
-            Or did the company disable the application?
+            Or did the company disable the application causing it to cascade?
           </aside>
 
         </section>
@@ -406,7 +408,6 @@
           <h1>Event Sourcing</h1>
           <h1>DDD</h1>
           <h1>CQRS</h1>
-          <p>That is a lot to cover in one slot</p>
           <p class="fragment">All 3 are optional, but work very nice together</p>
 
           <aside class="notes">
@@ -523,7 +524,8 @@ public function apply($event)
         </section>
 
         <section>
-          <pre><code class="php">public function applyCompanyRegisteredEvent(
+          <pre><code class="php">// Company.php
+public function applyCompanyRegisteredEvent(
   CompanyRegisteredEvent $event
 ) {
   $this-&gt;companyId = $event-&gt;getCompanyId();
@@ -716,7 +718,7 @@ function applyAppEnabledEvent(
           <h2>AccessGrantedToApp</h2>
 
           <pre><code class="php">// Company
-public function getChildEntities()
+protected function getChildEntities()
 {
   return $this-&gt;subscriptions;
 }</code></pre>
