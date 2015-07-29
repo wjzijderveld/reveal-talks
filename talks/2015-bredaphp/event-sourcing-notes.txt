@@ -1,0 +1,166 @@
+
+
+
+
+- CQRS and Event Sourcing
+
+-- Separate your writes from your reads
+-- A Command changes state, without returning a result
+-- A Query returns results, but will never change state
+
+!! Domain messages
+
+- Aggregate Root
+
+-- Your interface to your domain
+-- Only events change the state
+-- Shields access to underlaying models (child entities) that shouldn't be changed without the AR knowing about it
+--
+
+
+- How Event Sourcing
+
+--
+
+
+
+The domain in question, a basket the supermarket monitors:
+
+
+We are doing some groceries at our favorite supermarket
+So we grab a basket and look at our list -> BasketPickedUp (The basket is our aggregate)
+
+-----------------
+| . | . | . | . |
+-----------------
+| . | . | . | . |
+-----------------
+| . | . | . | . |
+-----------------
+
+The first item is some lettuce  -> ProductAdded(Lettuce, Weight::gram(100), Dimension(2,2))
+By default we add items to the top left of the basket
+
+-----------------
+| L | L | . | . |
+-----------------
+| L | L | . | . |
+-----------------
+| . | . | . | . |
+-----------------
+
+The next item on your list: some milk -> ProductAdded(Milk, Weight::kilo(1), Dimension(1,2))
+
+-----------------
+| L | L | M | . |
+-----------------
+| L | L | M | . |
+-----------------
+| . | . | . | . |
+-----------------
+
+You actually need 2, so you'll add another one -> ProductAdded(Milk, Weight::kilo(1), Dimension(1,2))
+
+-----------------
+| L | L | M | M |
+-----------------
+| L | L | M | M |
+-----------------
+| . | . | . | . |
+-----------------
+
+
+You notice your basket is a bit heavy on the right side, so you reorder it to balance it out:
+
+-> ProductRemoved(Milk) // The first one
+-> ProductMoved(Lettuce, Position(1,1))
+-> ProductAdded(Milk, Weight::kilo(1), Dimension(1, 2))
+
+-----------------
+| M | L | L | M |
+-----------------
+| M | L | L | M |
+-----------------
+| . | . | . | . |
+-----------------
+
+
+Next on the list is some eggs -> ProductAdded(Eggs, Weight::gram(200), Dimension(2,1))
+
+-----------------
+| M | L | L | M |
+-----------------
+| M | L | L | M |
+-----------------
+| E | E | . | . |
+-----------------
+
+You walk to the cash register and notice a discount on a different type of eggs
+So you replace the eggs you just added with the discounted eggs
+
+-> ProductRemovedFromBasket(Eggs)
+-> DiscountedProductAdded(OtherEggs)
+
+-----------------
+| M | L | L | M |
+-----------------
+| M | L | L | M |
+-----------------
+| E | E | . | . |
+-----------------
+
+You proceed to the cash register and put your items on the conveyor belt:
+
+-> TransferredProductToConveyorBelt(Milk)
+-> TransferredProductToConveyorBelt(Milk)
+-> TransferredProductToConveyorBelt(Lettuce)
+-> TransferredProductToConveyorBelt(Eggs)
+
+You see some candy you like and put that with your groceries
+
+-> AddedCheckoutBargain(Candy)
+
+And finally you checkout your groceries
+
+-> BasketCheckedOut(Cash(10))
+
+
+Information that would have been lost without event sourcing:
+- You started with an empty basket
+- You shuffled some products arround
+- You actually wanted to buy different type of eggs
+- You didn't put the Candy in your basket
+- In what order you put the items on the belt (it might not even matter at this moment, but what if next year it would matter for the cashier training?)
+
+
+
+
+
+
+
+
+
+# What do I want to tell
+
+
+Most people use some sort of database to store there state.
+So to store a user you could have a table users.
+Each user can have access to multiple applications, so we create 2 more tables; applications and user_application
+It requires an ORM or DataMapper to rebuild objects from database records.
+Your database tables aren't your objects, you will always have to recreate your objects from the data in your database. With that you can lose a lot of information. You won't be able to store everything you know of an object, the context will be lost.
+Because of this, you won't know why the data is as it is. You will not know what happened to come to this state. You might be able to reverse-engineer it, if there is only 1 way to create that data.
+
+
+
+
+
+There are a lot of cases where you need the data in different formats.
+To support al those formats you build in abstractions in your data. The more you want to query, the more complex your abstractions will get.
+Untill you'll end up with an EAV model. And we all like EAV models, right?
+By creating read models you partially solve that. You can create multiple read models from the same data to allow for writing easy qieries to display the data in different formats. But with that you also created a new problem: keeping all those models in sync.
+
+
+With the event stream you are writing history. You keep a record of what happened.
+When you use the right events and the right names you will have a clear idea why things happend.
+
+
