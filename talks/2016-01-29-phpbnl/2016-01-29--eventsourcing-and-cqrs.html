@@ -1,0 +1,1185 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Let's write some history - PHPBenelux 2016</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <link rel="shortcut icon" type="image/png" href="../../img/favicon.png"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="../../css/reveal.min.css">
+    <link rel="stylesheet" href="../../css/theme/qandidate.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="../../lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+      if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = '../../css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }
+    </script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-5505825-12', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+
+    <link rel="stylesheet" href="../../css/font-awesome.min.css">
+
+    <!--[if lt IE 9]>
+        <script src="../lib/js/html5shiv.js"></script>
+        <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <img class="logo" title="Qandidate.com" src="img/qandidate-logo.png" />
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+        <section>
+
+          <h1>Event Sourcing</h1>
+          <h2>Let's write some history</h2>
+
+          <h5>https://joind.in/talk/6bf57</h5>
+
+        </section>
+
+        <section>
+
+          <h2>Willem-Jan Zijderveld</h2>
+
+          <ul>
+            <li><span class="fa fa-twitter-square"></span> @willemjanz</li>
+            <li><span class="fa fa-github-square"></span> github.com/wjzijderveld</li>
+          </ul>
+
+        </section>
+
+        <section>
+
+          <img src="img/qandidate-logo-large.png" border="0" style="border:0; box-shadow:none;" />
+          <h3>Rotterdam</h3>
+          <p class="fragment">http://labs.qandidate.com</p>
+
+          <aside class="notes">
+            A company that provides a free applicant tracking system for HR/inhous recruitment
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Broadway</h1>
+          <h3>Event Sourcing/CQRS<br>library for PHP</h3>
+          <p>github.com/qandidate-labs/broadway</p>
+
+          <aside class="notes">
+            Has been running in production for almost 2 years<br>
+            Opensourced it almost a year ago
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Event Sourcing</h1>
+
+        </section>
+
+        <section>
+
+          <h2>You are throwing away data!</h2>
+
+          <img src="img/daas.png" />
+
+        </section>
+
+        <section>
+
+          <h1 class="large">Only <strong>state</strong> gets stored</h1>
+
+        </section>
+
+        <section>
+
+          <h1 class="large">Only the <strong>most recent</strong> state gets stored</h1>
+
+        </section>
+
+        <section>
+
+          <h1>What was the <strong>previous state</strong>?</h1>
+
+        </section>
+
+        <section>
+
+          <h1><strong>Why</strong> did the state change?</h1>
+
+        </section>
+
+        <section>
+          <h1>It's hard to <strong>keep track</strong> of all the data</h1>
+        </section>
+
+        <section>
+          <h2>An example</h2>
+        </section>
+
+        <section>
+
+          <h1>A <strong>company</strong> has one or more connected <strong>accounts</strong></h1>
+
+          <aside class="notes">
+            This would probably end up with 3 tables
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>A <strong>company</strong> has one or more enabled <strong>applications</strong></h1>
+
+          <aside class="notes">
+            Adds another 2 tables
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>An <strong>account</strong> has access to one or more <strong>applications</strong></h1>
+
+          <aside class="notes">
+            And we add another table
+          </aside>
+
+        </section>
+
+        <section>
+
+          <img src="dot/domain.png" />
+
+        </section>
+
+        <section>
+
+          <h2>Complicated solutions to store and retrieve the data</h2>
+
+          <aside class="notes">
+            The objects and its relations should be stored<br>
+            And on retrieval be reconstructed...
+          </aside>
+
+        </section>
+
+        <section>
+          <h1>But we manage</h1>
+
+          <h2 class="fragment">Until...</h2>
+        </section>
+
+        <section>
+
+          <h1>Boss: Which accounts <strong>received access</strong> to application X in December?</h1>
+
+        </section>
+
+        <section>
+
+          <h1>"We'll add a timestamp<br>and we will know"</h1>
+          <p class="fragment">From that point in time</p>
+
+          <aside class="notes">Timestamp in your join-table.. fun stuff</aside>
+
+        </section>
+
+        <section>
+
+          <h1>With CRUD you lose information</h1>
+          <h3>You only store the last known information</h3>
+
+          <aside class="notes">
+            We already are missing data
+          </aside>
+
+        </section>
+
+        <section>
+          <h1>Another example</h1>
+        </section>
+
+        <section>
+
+          <h2><strong>Revoking access</strong> to an application for an account</h2>
+
+          <h4 class="fragment">
+            Just remove the row in our join table
+          </h4>
+
+        </section>
+
+        <section>
+
+          <h2>You could lose <strong>when</strong> the access was revoked</h2>
+
+        </section>
+
+        <section>
+
+          <h2>You could lose <strong>why</strong> it got revoked</h2>
+
+          <aside class="notes">
+            Was it a manual action?<br>
+            Or did the company disable the application causing it to cascade?
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h2>You could lose <strong>for which application</strong> it was revoked</h2>
+
+          <aside class="notes">
+            You would never know for what applications an account HAD access.
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h2>You <strong>wouldn't know</strong> anything anymore</h2>
+
+        </section>
+
+        <section>
+
+          <h2>Let's assume you have<br>a soft-delete in place</h2>
+
+        </section>
+
+        <section>
+
+          <h2>Boss: I want to know for which applications access got revoked <strong>more than once</strong><br>in the last year</h2>
+
+          <aside class="notes">
+            If you would actually have the data<br>
+            You might have to do some scary queries to get it
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h2>Keep track of revocations</h2>
+          <br>
+
+          <table class="border full">
+            <thead>
+              <tr>
+                <th>account_id</th>
+                <th>app_id</th>
+                <th>datetime</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>75623</td>
+                <td>8</td>
+                <td>2015-01-01T00:00:00+0000</td>
+              </tr>
+              <tr>
+                <td>75623</td>
+                <td>8</td>
+                <td>2015-01-27T18:54:18+0000</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <br>
+          <p class="fragment">Are you going to do this for all actions on accounts?</p>
+
+          <aside class="notes">
+            The first might be the end of a subscription<br>
+            Apparantly renewed, but the again revoked less then a month later<br>
+            But how maintainable is this? Are you keep adding new tables with data?<br>
+            Flattened data, are you sure you want to try and keep that in sync?
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>How does Event Sourcing help me with that?</h1>
+
+        </section>
+
+        <section>
+
+          <h2>Store your data in<br><strong>a different way</strong></h2>
+
+        </section>
+
+        <section>
+
+          <h2>Record what has <strong>happened</strong></h2>
+          <p>The resulting state becomes a natural effect</p>
+
+        </section>
+
+        <section>
+
+          <h1>EventStream</h1>
+
+          <aside class="notes">
+            We call this an eventstream<br>
+            Saved in an eventstore
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h2>A serie of <strong>facts</strong></h2>
+
+          <div class="fragment">
+            <div class="event">CompanyRegistered</div>
+            <div class="event">AppEnabled</div>
+            <div class="event">AccountConnected</div>
+            <div class="event">AccessGrantedToApp</div>
+          </div>
+
+          <aside class="notes">
+            They are stacked together<br>
+            Builds on the previous events
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h2>Been there, <strong>done</strong> that</h2>
+
+          <aside class="notes">
+            Not something that needs to happen<br>
+            it already happened
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Single source of truth</h1>
+          <ul>
+            <li class="fragment1">One source to rule all state</li>
+            <li class="fragment1">The events cannot lie, it happened, deal with it</li>
+          </ul>
+
+        </section>
+
+        <section>
+          <h2>You have been working with this system</h2>
+        </section>
+
+        <section>
+
+          <h1>Your version control is event sourced</h1>
+
+          <img src="img/git-reflog-1.png" class="fragment" />
+          <img src="img/git-reflog-2.png" class="fragment" />
+
+        </section>
+
+        <section>
+
+          <h1>Sure thing, but how?</h1>
+
+          <p class="fragment">"It depends"</p>
+
+        </section>
+
+        <section>
+
+          <h1>Event Sourcing</h1>
+          <h1>DDD</h1>
+          <h1>CQRS</h1>
+          <p class="fragment">All 3 are optional, but work very nice together</p>
+
+          <aside class="notes">
+            We will touch it when needed
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Domain Driven Design</h1>
+          <p>Let the events tell the story</p>
+          <p>The business should be reflected in your code</p>
+
+          <aside class="notes">
+            To me, ES makes most sense with DDD<br>
+            Thats why method names are maybe longer then you are used to...
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Entity</h1>
+
+          <p>An model with an identity</p>
+
+        </section>
+
+        <section>
+
+          <h1>Aggregate root</h1>
+
+          <p>Responsible for keeping a group of entities consistent</p>
+
+          <aside class="notes">
+            Aggregate is a collection of one or more objects with identity.<br>
+            Multiple aggregates are bound by an aggregate root<br>
+            The aggregate root guarantees the consistency of it's inner objects<br>
+            All changes happen via the aggregate root!
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>I want to create/update my model</h1>
+          <h2>How do I do that?</h2>
+
+          <aside class="notes">
+            I might or might not convinced you about EventSourcing..<br>
+            But how does it work
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Record what happened</h1>
+
+          <aside class="notes">
+            We record that something happend, we do this in with a DomainMessage<br>
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h3>You normally might do it like this</h3>
+          <pre><code class="php">&lt;?php // Company.php
+public function __construct($id, $name)
+{
+  $this-&gt;id = $id;
+  $this-&gt;name = $name;
+}</pre></code>
+
+        </section>
+
+        <section>
+          <h1>But we want to record an event</h1>
+        </section>
+
+        <section>
+
+          <pre><code class="php">&lt;?php // Company.php
+public static function register($id, $name)
+{
+  $company = new Company();
+  $company-&gt;apply(
+    new CompanyRegisteredEvent($id, $name)
+  );
+  return $company;
+}</pre></code>
+
+        </section>
+        
+        <section>
+          <h1>Record the events</h1>
+
+          <pre><code class="php">&lt;php // AggregateRoot.php
+public function apply($event)
+{
+  $this-&gt;handle($event);
+  $this-&gt;uncommitedEvents[] = $event;
+}
+</code></pre>
+
+<pre><code class="php">private function handle($event)
+{
+  $classParts = explode('\\', $event);
+  $method = 'apply' . end($classParts);
+  $this->$method($event);
+}</code></pre>
+        </section>
+
+        <section>
+          <pre><code class="php">// Company.php
+public function applyCompanyRegisteredEvent(
+  CompanyRegisteredEvent $event
+) {
+  $this-&gt;companyId = $event-&gt;getCompanyId();
+  $this-&gt;companyName = $event-&gt;getCompanyName();
+}</code></pre>
+        </section>
+
+        <section>
+
+          <h1>Save your events in an eventstore</h1>
+
+          <aside class="notes">
+            - Serialize and deserialize events<br>
+- identify all events for an aggregate
+- Make sure you save the order of the events</aside>
+
+        </section>
+
+        <section>
+          <h2>Current situation</h2>
+
+          <img src="img/events-store.png" class="noborder" border="0" style="border:0; box-shadow:none;"  />
+        </section>
+
+        <section>
+          <h1>Reloading your model</h1>
+        </section>
+
+        <section>
+          <pre><code class="php">&lt;php // CompanyRepository.php
+function load($aggregateId)
+{
+  $events = $this-&gt;eventStore-&gt;load($aggregateId);
+
+  $aggregate = new $this-&gt;aggregateClass();
+  $aggregate-&gt;initializeState($events);
+
+  return $aggregate;
+}</code></pre>
+        </section>
+
+        <section>
+          <pre><code class="php">&lt?php // Company.php
+public function initializeState(array $events)
+{
+  foreach ($events as $event)
+  {
+    $this-&gt;handle($event);
+  }
+}</code></pre>
+        </section>
+
+        <section>
+
+          <h1>Domain Message</h1>
+          <p>A message to tell your application what happened</p>
+
+        </section>
+
+        <section>
+
+          <h2>DomainMessage</h2>
+          <ul>
+            <li>Identifier</li>
+            <li>Sequencenumber</li>
+            <li>Payload</li>
+            <li>Timestamp</li>
+            <li>Metadata</li>
+          </ul>
+
+          <aside class="notes">
+          I'll explain each of these
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Identifier + sequence number</h1>
+
+          <aside class="notes">
+            Tells you for what aggregate it happened
+            and in what order
+          </aside>
+
+        </section>
+
+
+        <section>
+
+          <h1>Payload</h1>
+          <h2>The event itself, it tells you <strong>what</strong> happened</h2>
+
+        </section>
+
+        <section>
+
+          <h2>Should contain everything</h2>
+          <p>It should only depend on previous events</p>
+
+          <pre><code class="php">final class CompanyRegisteredEvent
+{
+  private $companyId;
+  private $companyName;
+
+  // constructor + getters
+}</code></pre>
+
+        </section>
+
+        <section>
+
+          <h1>Timestamp</h1>
+          <h2>It tells you <strong>when</strong> it happened</h2>
+
+          <aside class="notes">
+            Don't forget to save the timezone, you don't know when you are replaying the events..
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Metadata</h1>
+          <h2>Descriptive, not structural</h2>
+
+          <aside class="notes">
+            - Request identifier<br>
+            - Current user
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Let's look at some other events</h1>
+
+          <div class="event">CompanyRegistered</div>
+          <div class="event">AppEnabled</div>
+          <div class="event">AccountConnected</div>
+          <div class="event">AccessGrantedToApp</div>
+
+        </section>
+
+        <section>
+
+          <h2>CompanyRegistered</h2>
+
+          <pre><code class="php">// Company
+function applyCompanyRegisteredEvent(CompanyRegisteredEvent $event)
+{
+  $this-&gt;companyId = $event-&gt;getCompanyId();
+}</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>AccountConnected</h2>
+
+          <pre><code class="php">// Company
+function applyAccountConnectedEvent(AccountConnectedEvent $event)
+{
+  $id = $event-&gt;getAccountId();
+  $this-&gt;accounts[$id] = $id;
+}</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>AppEnabled</h2>
+
+          <pre><code class="php">// Company
+function applyAppEnabledEvent(AppEnabledEvent $event)
+{
+  $subscription = new Subscription(
+    $event-&gt;getCompanyId(),
+    $event-&gt;getAppId()
+  );
+  $this-&gt;subscriptions[$event-&gt;getAppId()] = $subscription;
+}</code></pre>
+
+          <aside class="notes">
+            - Creating a child Entity<br>
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h2>AccessGrantedToApp</h2>
+
+          <pre><code class="php">// Company
+protected function getChildEntities()
+{
+  return $this-&gt;subscriptions;
+}</code></pre>
+
+          <pre><code class="php">// Subscription
+function applyAccessGrantedToAppEvent(
+  AccessGrantedToAppEvent $event
+) {
+  if ($this-&gt;appId !== $event-&gt;getAppId()) {
+    return;
+  }
+
+  $accountId = $event-&gt;getAccountId();
+  $this-&gt;grantedAccounts[$accountId] = $accountId;
+}</code></pre>
+
+        </section>
+
+        <section>
+          <h1>We can retrieve all <strong>AccessGranted </strong>events for <strong>December</strong></h1>
+
+          <aside class="notes">
+            - Remember when the boss asked for accounts that received access in december?<br>
+            - The same goes for AccessRevoked events<br>
+          - Specific events can tell us why it was revoked</aside>
+        </section>
+
+        <section>
+          <h1>Won't this be slow?</h1>
+        </section>
+
+        <section>
+          <h1>CQRS</h1>
+
+          <h4>Command Query Responsibility Segregation</h4>
+        </section>
+
+        <section>
+          <h1>Separate your <strong>writes</strong> and your <strong>reads</strong></h1>
+        </section>
+
+        <section>
+          <h1>Read Models</h1>
+
+          <h3>Create them from events using projections</h3>
+          <p>Specific read models for specific views in your application</p>
+
+          <aside class="notes">
+          - Create read models to create views
+          - Let projectors listen to events
+          </aside>
+        </section>
+
+        <section>
+          <h1>EventBus</h1>
+          <p>All events go onto the event bus after being saved</p>
+        </section>
+
+        <section>
+
+          <h2>CompanyRegistration</h2>
+
+          <pre><code class="php">class CompanyRegistration implements ReadModel
+{
+  public function __construct(
+    $companyId,
+    $companyName,
+    DateTime $registeredOn
+  ) {
+    // ..
+  }
+}</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>Company Registration Projector</h2>
+
+          <pre><code class="php">class CompanyRegistrationProjector implements EventListener
+{
+  public function applyCompanyRegisteredEvent(
+    CompanyRegisteredEvent $event,
+    DomainMessage $domainMessage
+  ) {
+    $company = new CompanyRegistration(
+      $event-&gt;getCompanyId(),
+      $event-&gt;getCompanyName(),
+      $domainMessage-&gt;getRecordedOn()
+    );
+    $this-&gt;repository-&gt;save($company);
+  }
+}</code></pre>
+
+        </section>
+
+        <section>
+
+          <h1>Use the right tool for the right job</h1>
+
+          <aside class="notes">
+            Need to search a lot? Use f.e. Elasticsearch<br>
+            Need more insights in relations? Use f.e. Neo4j<br>
+            Nothing is stopping you
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1><strong>Possibilities</strong> are endless</h1>
+
+        </section>
+
+        <section>
+
+          <h2>The ability to create multiple read models</h2>
+
+          <ul>
+            <li class="fragment">List of company registrations</li>
+            <li class="fragment">Graph of all connections between companies and accounts</li>
+            <li class="fragment">Creating reports about the amount of revocations</li>
+          </ul>
+
+        </section>
+
+        <section>
+          <h1>So.. how does this flow work in an application?</h1>
+        </section>
+
+        <section>
+          <img src="img/projectors.png" style="border:0; box-shadow: none;" />
+        </section>
+
+        <section>
+          <h1>The C in CQRS</h1>
+        </section>
+
+        <section>
+          <h1>The <strong>write</strong> part of CQRS</h1>
+        </section>
+
+        <section>
+
+          <h2>Command &amp; CommandHandler</h2>
+          <p>A CommandHandler deals with Commands and communicates with the Aggregate root</p>
+
+          <aside class="notes">
+            Part of the CQRS approach.<br>
+            In our case: Commands don't return a result.<br>
+            A query will never change state
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h2>From Controller<br>to CommandBus</h2>
+
+          <pre><code class="php">class CompanyController
+{
+  function registerAction(Request $request)
+  {
+    $this-&gt;commandBus-&gt;dispatch(
+      new RegisterCompanyCommand(
+        Uuid::uuid4(),
+        $request-&gt;request-&gt;get('companyName')
+      )
+    );
+  }
+}</code></pre>
+
+          <aside class="notes">
+            We use commands to trigger an action<br>
+            Controller doesn't need to know how the aggregate works
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h2>From CommandHandler<br>to Aggregate</h2>
+
+          <pre><code class="php">class CompanyCommandHandler
+{
+  function handleRegisterCompanyCommand(
+    RegisterCompanyCommand $command
+  ) {
+    $company = Company::register(
+      $command-&gt;getCompanyId(),
+      $command-&gt;getCompanyName()
+    );
+
+    $this-&gt;aggregateRepostitory-&gt;save($company);
+  }
+}</code></pre>
+
+          <aside class="notes">
+            We tell the Company to register, which will create and return an instance of itself<br>
+            We then save the aggregate, which means that we retrieve and store all uncommitted events.
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h2>From Aggregate to Event</h2>
+
+          <pre><code class="php">public static function register($companyId, $name)
+{
+  $company = new Company();
+  $company-&gt;apply(
+    new CompanyRegisteredEvent($companyId, $name)
+  );
+
+  return $company;
+}</code></pre><pre><code class="php">public function applyCompanyRegisteredEvent(
+  CompanyRegisteredEvent $event
+) {
+  $this-&gt;companyId = $event-&gt;getCompanyId();
+}</code></pre>
+
+          <aside class="notes">
+            Notice we don't use the name, but we do have it in the event for use somewhere else.
+          </aside>
+
+        </section>
+
+        <section>
+          <h2>From Repository to EventStore</h2>
+
+          <pre><code class="php">// CompanyRegistry.php
+function save($aggregate)
+{
+  $events = $aggregate-&gt;getUncommittedEvents();
+  $this-&gt;eventStore-&gt;append($aggregate-&gt;getAggregateId(), $events);
+  $this-&gt;eventBus-&gt;publish($events);
+}</code></pre>
+        </section>
+
+        <section>
+          <h2>From event to read model</h2>
+
+          <pre><code class="php">class CompanyRegistrationProjector {
+  public function applyCompanyRegisteredEvent(
+    CompanyRegisteredEvent $event,
+    DomainMessage $domainMessage
+  ) {
+    $company = new CompanyRegistration(
+      $event-&gt;getCompanyId(),
+      $event-&gt;getCompanyName(),
+      $domainMessage-&gt;getRecordedOn()
+    );
+    $this-&gt;repository-&gt;save($company);
+  }
+}</code></pre>
+        </section>
+<!--
+        <section>
+
+          <p>Controller -&gt; CommandBus -&gt; CommandHandler -&gt; AggregateRoot -&gt; Event -&gt; EventStore -&gt; EventBus -&gt; Projectors -&gt; Read Model</p>
+
+        </section>
+-->
+
+        <section>
+          <h1>Quite a bit to chew</h1>
+        </section>
+
+        <section>
+          <img src="img/full-picture.png" style="border: 0; box-shadow: none;" />
+        </section>
+
+        <section>
+          <h1>But we are not done yet!</h1>
+        </section>
+
+        <section>
+          <h1>Testing</h1>
+        </section>
+
+        <section>
+          <h2>Scenario based testing</h2>
+          <h1>Given - When - Then</h1>
+        </section>
+
+        <section>
+
+          <h1>Test your Command Handler</h1>
+
+          <pre><code class="php">$this-&gt;scenario
+  -&gt;given([
+    new CompanyRegisteredEvent(123)
+  ])
+  -&gt;when(new EnableAppForCompanyCommand(42, 123))
+  -&gt;then([
+    new AppEnabledEvent(42, 123)
+  ]);</code></pre>
+
+          <aside class="notes">
+            Would be relatively easy to accomplish<br>
+            Lots of alternatives possible
+          </aside>
+
+        </section>
+
+        <section>
+
+          <h1>Or your aggregate</h1>
+
+          <pre><code class="php">$this-&gt;scenario
+  -&gt;given([
+    new CompanyRegisteredEvent(123)
+  ])
+  -&gt;when(function ($company) {
+    $company-&gt;enableApp(42);
+  })
+  -&gt;then([
+    new AppEnabledEvent(42, 123)
+  ]);</code></pre>
+
+          <aside class="notes">
+            Would be relatively easy to accomplish<br>
+            Lots of alternatives possible
+          </aside>
+
+        </section>
+
+        <section>
+          <h1>Don't forget your read models</h1>
+
+          <pre><code class="php">$this-&gt;scenario
+  -&gt;given([])
+  -&gt;when(
+    new CompanyRegisteredEvent(123, 'Acme Inc')
+  )
+  -&gt;then([
+    new CompanyRegistration(123, 'Acme Inc')
+  ]);</code></pre>
+
+        </section>
+
+        <section>
+
+          <h2>Time travel <strong>is</strong> possible!</h2>
+
+          <p>Use events you recorded to create a new report<br /><span class="fragment">multiple years after the fact</span></p>
+
+        </section>
+
+        <section>
+
+          <h2>You <strong>made a mistake</strong> in a projection?</h2>
+
+          <p>So what? Correct your projector and recreate your read model from your event stream</p>
+
+        </section>
+
+        <section>
+
+          <h1>Questions?</h1>
+
+          <p>&nbsp;</p>
+          <h3>https://joind.in/talk/6bf57</h3>
+
+          <p>@willemjanz</p>
+          <p>Freenode: #qandidate</p>
+
+        </section>
+
+        <section>
+
+          <h2>More information</h2>
+
+          <ul>
+            <li>http://codebetter.com/gregyoung/2010/02/20/why-use-event-sourcing/</li>
+            <li>http://codebetter.com/gregyoung/2010/02/13/cqrs-and-event-sourcing/</li>
+            <li>http://martinfowler.com/eaaDev/EventSourcing.html</li>
+            <li>http://martinfowler.com/bliki/CQRS.html</li>
+            <li>http://www.axonframework.org/docs/2.3/domain-modeling.html</li>
+            <li>http://labs.qandidate.com/</li>
+          </ul>
+
+        </section>
+
+      </div>
+    </div>
+
+    <div class="pager">
+      <span id="pagerCurrentSlide"></span>/<span id="pagerTotalSlides"></span>
+    </div>
+
+    <script src="../../lib/js/head.min.js"></script>
+    <script src="../../js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+
+        width: '95%',
+        height: '95%',
+
+        transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: '../../lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '../../plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../../plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '../../plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: '../../plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: '../../plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ],
+        keyboard: {
+          66: 'toggleOverview'
+        }
+      });
+
+      function updatePager(current, total) {
+          var currentElement = document.getElementById('pagerCurrentSlide'),
+              totalSlides = document.getElementById('pagerTotalSlides');
+
+          currentElement.innerText = current;
+          totalSlides.innerText = total;
+      }
+
+      function getTotalSlides() {
+          var horizontalSlides = document.querySelectorAll('.reveal .slides>section')
+          return parseInt(horizontalSlides.length, 10);
+      }
+
+      Reveal.addEventListener('slidechanged', function (event) {
+          updatePager(parseInt(event.indexh, 10) + 1, getTotalSlides());
+      });
+
+      updatePager(1, getTotalSlides());
+    </script>
+  </body>
+</html>

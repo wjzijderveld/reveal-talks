@@ -133,7 +133,8 @@ body {
   left: 10px;
   max-height: 50px; }
 .reveal pre {
-  font-size: 0.625em; }
+  font-size: 0.625em;
+  width: 100%; }
 .reveal table {
   width: 100%; }
   .reveal table th, .reveal table td {
